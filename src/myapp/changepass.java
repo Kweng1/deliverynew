@@ -45,7 +45,7 @@ public class changepass extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
+        oldpassword = new javax.swing.JLabel();
         username = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -53,6 +53,8 @@ public class changepass extends javax.swing.JFrame {
         update = new javax.swing.JButton();
         conpass = new javax.swing.JTextField();
         newpass = new javax.swing.JPasswordField();
+        jLabel7 = new javax.swing.JLabel();
+        oldpass = new javax.swing.JPasswordField();
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -86,11 +88,11 @@ public class changepass extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(0, 0, 0, 80));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel4.setBackground(new java.awt.Color(0, 121, 111));
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(217, 222, 135));
-        jLabel4.setText("Username:");
-        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 31, 130, 20));
+        oldpassword.setBackground(new java.awt.Color(0, 121, 111));
+        oldpassword.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        oldpassword.setForeground(new java.awt.Color(217, 222, 135));
+        oldpassword.setText("Old Password:");
+        jPanel3.add(oldpassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 130, 20));
 
         username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         username.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -100,13 +102,13 @@ public class changepass extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(217, 222, 135));
         jLabel1.setText("Confirm Password:");
-        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 170, 30));
+        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 170, 30));
 
         jLabel3.setBackground(new java.awt.Color(0, 121, 111));
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(217, 222, 135));
         jLabel3.setText("New Password:");
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 140, 20));
+        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 140, 20));
 
         cancel.setBackground(new java.awt.Color(222, 141, 135));
         cancel.setText("CANCEL");
@@ -134,7 +136,7 @@ public class changepass extends javax.swing.JFrame {
                 conpassActionPerformed(evt);
             }
         });
-        jPanel3.add(conpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 260, 30));
+        jPanel3.add(conpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 260, 30));
 
         newpass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         newpass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -143,7 +145,16 @@ public class changepass extends javax.swing.JFrame {
                 newpassActionPerformed(evt);
             }
         });
-        jPanel3.add(newpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, 260, 30));
+        jPanel3.add(newpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 260, 30));
+
+        jLabel7.setBackground(new java.awt.Color(0, 121, 111));
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(217, 222, 135));
+        jLabel7.setText("Username:");
+        jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 31, 130, 20));
+
+        oldpass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel3.add(oldpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, 260, 30));
 
         jPanel1.add(jPanel3);
         jPanel3.setBounds(240, 80, 520, 330);
@@ -174,15 +185,16 @@ public class changepass extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-     String usename,oldpassword,confirmpassword;
-      usename = username.getText();    
+      String usename,confirmpassword;
+      usename = username.getText();  
+      String op = String.valueOf(oldpass.getPassword());
       String newpassword = String.valueOf(newpass.getPassword());
       confirmpassword = conpass.getText();
       
       if (usename.equals(""))
         {
             JOptionPane.showMessageDialog(null, "All Fields Are Required!");
-        }else if (newpassword.equals(""))
+        }else if (newpassword.equals("")||op.equals(""))
         {
             JOptionPane.showMessageDialog(null, "Add a password");
         }else if (!newpassword.equals(confirmpassword))
@@ -267,13 +279,15 @@ String changeQuery = ("UPDATE user_db SET pass_word = ? where user_name = '"+use
     private javax.swing.JTextField conpass;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPasswordField newpass;
+    private javax.swing.JPasswordField oldpass;
+    private javax.swing.JLabel oldpassword;
     private javax.swing.JButton update;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
