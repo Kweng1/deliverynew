@@ -6,7 +6,10 @@
 package internalPages;
 
 import config.dbconnector;
+import config.login_db;
 import java.awt.Color;
+import java.security.NoSuchAlgorithmException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -17,6 +20,7 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import myapp.loginForm;
 import net.proteanit.sql.DbUtils;
 
 
@@ -44,7 +48,7 @@ public class customerReport extends javax.swing.JInternalFrame {
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT c_id as 'ID', c_name as 'Name', c_add as 'Address', c_order as 'Order', c_size as 'Size', c_quant as 'Quantity', c_price as 'Price', c_tp as 'Total Price' FROM customer_tbl");
+            ResultSet rs = dbc.getData("SELECT c_id as 'ID', c_name as 'Name', c_add as 'Address',c_con as 'Contact', c_order as 'Order', c_size as 'Size', c_quant as 'Quantity', c_price as 'Price', c_tp as 'Total Price' FROM customer_tbl");
             customer_tbl.setModel(DbUtils.resultSetToTableModel(rs));
        
         }catch(SQLException ex){
@@ -62,7 +66,7 @@ public class customerReport extends javax.swing.JInternalFrame {
         cid.setText("");
          corder.setText("");
           cprice.setText("");
-           size.setText("");
+           csize.setText("");
             ctp.setText("");
              cquant.setText("");
         
@@ -107,7 +111,7 @@ public class customerReport extends javax.swing.JInternalFrame {
         ctp = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         corder = new javax.swing.JTextField();
-        size = new javax.swing.JTextField();
+        csize = new javax.swing.JTextField();
         cprice = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         Quantity = new javax.swing.JLabel();
@@ -318,10 +322,10 @@ public class customerReport extends javax.swing.JInternalFrame {
         corder.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.add(corder, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 370, 220, 20));
 
-        size.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        size.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        size.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(size, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 250, 220, 20));
+        csize.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        csize.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        csize.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.add(csize, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 250, 220, 20));
 
         cprice.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cprice.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -434,7 +438,7 @@ public class customerReport extends javax.swing.JInternalFrame {
          cid.setText(null);
          cadd.setText(null);
          corder.setText(null);
-         size.setText(null);
+         csize.setText(null);
          cprice.setText(null);
          ctp.setText(null);
          cquant.setText(null);
@@ -480,7 +484,7 @@ public class customerReport extends javax.swing.JInternalFrame {
        dbconnector dbc = new dbconnector();
         int num = dbc.updateData("UPDATE customer_tbl "
                 + "SET c_id = '"+cid.getText()+"', c_name='"+cname.getText()+"', "
-                        + "c_add ='"+cadd.getText()+"',c_con='"+ccon.getText()+"',c_order='"+corder.getText()+"',c_quant='"+size.getText()+"', c_price='"+cprice.getText()+
+                        + "c_add ='"+cadd.getText()+"',c_con='"+ccon.getText()+"',c_order='"+corder.getText()+"',c_quant='"+cquant.getText()+"',c_size='"+csize.getText()+"', c_price='"+cprice.getText()+
                 "',c_tp='"+ctp.getText()+"'  "
                                 + "WHERE c_id = '"+cid.getText()+"'");
        
@@ -502,12 +506,13 @@ public class customerReport extends javax.swing.JInternalFrame {
           cid.setText(""+model.getValueAt(rowIndex, 0));
           cname.setText(""+model.getValueAt(rowIndex, 1));
           cadd.setText(""+model.getValueAt(rowIndex, 2));
+          ccon.setText(""+model.getValueAt(rowIndex, 3));
+           corder.setText(""+model.getValueAt(rowIndex, 4));
+           csize.setText(""+model.getValueAt(rowIndex, 5));
+           cquant.setText(""+model.getValueAt(rowIndex, 6));
+           cprice.setText(""+model.getValueAt(rowIndex, 7));
+           ctp.setText(""+model.getValueAt(rowIndex, 8));
           
-           corder.setText(""+model.getValueAt(rowIndex, 3));
-           size.setText(""+model.getValueAt(rowIndex, 4));
-           cquant.setText(""+model.getValueAt(rowIndex, 5));
-           cprice.setText(""+model.getValueAt(rowIndex, 6));
-           ctp.setText(""+model.getValueAt(rowIndex, 7));
          
           
           
@@ -561,12 +566,52 @@ public class customerReport extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void addMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseClicked
-        dbconnector dbc = new dbconnector();
-        dbc.insertData("INSERT INTO customer_tbl ( c_name, c_add,c_con, c_order,, c_size, c_quant, c_price, c_tp, c_size) "
-                + "VALUES ( '"+cname.getText()+"','"+cadd.getText()+"','"+ccon.getText()+"','"+corder.getText()+"','" +cquant.getText()+"','"+cprice.getText()+"','"+ctp.getText()+"','"+size.getText()+"')");
-        JOptionPane.showMessageDialog(null, "Add Successfully!");
+          String name = cname.getText();
+         String contact = ccon.getText();
+      String address = cadd.getText();
+      String order = corder.getText();
+      String size = csize.getText();
+      String quantity = cquant.getText();
+      String price = cprice.getText();
+      String tp =ctp.getText();
+       
+        
+       
+        if (name.equals("")||contact.equals("")||address.equals("")||order.equals("")||size.equals("")||quantity.equals("")||price.equals("")||tp.equals(""))
+        {
+            JOptionPane.showMessageDialog(null, "All Fields Are Required!");
+        }
+        else{
+        PreparedStatement ps;
+ResultSet rs;
+String registerUserQuery = "INSERT INTO customer_tbl(c_name, c_add, c_con, c_order, c_size, c_quant, c_price, c_tp) VALUES (?,?,?,?,?,?,?,?)";
+
+try {
+    ps = login_db.getConnection().prepareStatement(registerUserQuery);
+    ps.setString(1, name);
+    ps.setString(2, address);
+    ps.setString(3, contact);
+    ps.setString(4, order);
+    ps.setString(5, size);
+    ps.setString(6, quantity);
+     ps.setString(7, price);
+      ps.setString(8,tp );
+   
+ 
+    if(ps.executeUpdate() > 0){
+        JOptionPane.showMessageDialog(null, "Add Successfully");
         displayData();
         reset();
+       
+       
+      
+    }else{
+        JOptionPane.showMessageDialog(null, "Error: Check Your Information");
+    }
+} catch (SQLException ex) {
+  JOptionPane.showMessageDialog(null, ex);
+}
+        }
     }//GEN-LAST:event_addMouseClicked
 
     private void addMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseEntered
@@ -595,6 +640,7 @@ public class customerReport extends javax.swing.JInternalFrame {
     private javax.swing.JTextField corder;
     private javax.swing.JTextField cprice;
     private javax.swing.JTextField cquant;
+    private javax.swing.JTextField csize;
     private javax.swing.JTextField ctp;
     private javax.swing.JTable customer_tbl;
     private javax.swing.JPanel delete;
@@ -619,7 +665,6 @@ public class customerReport extends javax.swing.JInternalFrame {
     private javax.swing.JPanel refresh;
     private javax.swing.JPanel search;
     private javax.swing.JTextField searchbar;
-    private javax.swing.JTextField size;
     private javax.swing.JPanel update;
     // End of variables declaration//GEN-END:variables
 }

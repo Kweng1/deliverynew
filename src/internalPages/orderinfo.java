@@ -45,11 +45,15 @@ public class orderinfo extends javax.swing.JInternalFrame {
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT customer_tbl.c_id as 'Customer ID',"
-                    + "customer_tbl.c_name as 'Customer Name' ,product_tbl.p_name as 'Product Name'"
-                    + " FROM customer_order LEFT JOIN customer_tbl ON \n" +
-                     "customer_order.c_id = customer_tbl.c_id "
-                    + "LEFT JOIN product_tbl ON customer_order.p_id = product_tbl.p_id");
+            ResultSet rs = dbc.getData("SELECT customer_tbl.c_id,"
+                    +"customer_tbl.c_name,"
+                    + "product_tbl.p_name,"
+                    + "customer_tbl.c_size,"
+                    + "customer_tbl.c_quant,"
+                    + "customer_tbl.c_tp\n" +
+                     "FROM customer_order "
+                    + "LEFT JOIN customer_tbl ON customer_order.c_id = customer_tbl.c_id"
+                    + " LEFT JOIN product_tbl ON customer_order.p_id = product_tbl.p_id");
             order_table.setModel(DbUtils.resultSetToTableModel(rs));
        
         }catch(SQLException ex){

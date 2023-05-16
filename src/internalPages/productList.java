@@ -134,7 +134,7 @@ if(pmed.equals("")){
      public void add(){
       try{
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
-            String sql = "INSERT INTO product_tbl  ( 'p_name', 'p_small', 'p_medium' , 'p_large', 'img_pc') VALUES ('"+pname.getText()+"','"+ps.getText()+"','"+pm.getText()+"','"+pl.getText()+"',? )"; 
+            String sql = "INSERT INTO product_tbl  ( p_name, p_small, p_medium , p_large, img_pc) VALUES (?,?,?,?,?)"; 
             PreparedStatement pst = con.prepareStatement(sql);
             
             pst.setString(1, pname.getText());
@@ -590,25 +590,7 @@ if(pmed.equals("")){
     }//GEN-LAST:event_updateMouseClicked
 
     private void pr_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pr_tableMouseClicked
-       int rowIndex = pr_table.getSelectedRow();
-        DefaultTableModel model = (DefaultTableModel) pr_table.getModel();
-String[] columnIdentifiers = {"ID", "Name", "Small","Medium","Large"};
-model.setColumnIdentifiers(columnIdentifiers);
-      if(rowIndex < 0){
-         
-      }else{
-          
-          pid.setText(""+model.getValueAt(rowIndex, 0));
-          pname.setText(""+model.getValueAt(rowIndex, 1));
-          ps.setText(""+model.getValueAt(rowIndex, 2));
-          pm.setText(""+model.getValueAt(rowIndex, 3));
-           pl.setText(""+model.getValueAt(rowIndex, 4));
-          
-         
-          
-          
-      }
-       
+      displayData(); 
     }//GEN-LAST:event_pr_tableMouseClicked
 
     private void printMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseClicked
@@ -635,7 +617,7 @@ model.setColumnIdentifiers(columnIdentifiers);
     }//GEN-LAST:event_printMouseExited
 
     private void refreshMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_refreshMouseClicked
-          displayData();
+         table();
     
     
     }//GEN-LAST:event_refreshMouseClicked
