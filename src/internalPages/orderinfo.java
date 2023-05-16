@@ -69,6 +69,7 @@ public class orderinfo extends javax.swing.JInternalFrame {
         
     }
     
+    
      Color navcolor= new Color(217,222,135);
     Color headcolor= new Color(222,140,135);
     Color bodycolor = new Color(222,184,135);

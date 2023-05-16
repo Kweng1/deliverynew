@@ -12,6 +12,8 @@ import java.io.*;
 import java.awt.Image;
 import java.awt.*;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.naming.spi.DirStateFactory.Result;
@@ -24,7 +26,7 @@ import net.proteanit.sql.DbUtils;
  * @author user
  */
 public class account extends javax.swing.JInternalFrame {
-
+private Connection con;
     /**
      * Creates new form account
      */
@@ -39,13 +41,9 @@ public class account extends javax.swing.JInternalFrame {
     public void displayData(){
          try {
               dbconnector dbc = new dbconnector();
-              ResultSet rs = dbc.getData("SELECT f_name as 'First Name', l_name as 'Last Name', email as 'Email', user_name as 'Username', sta_tus as 'Status',img_pic as 'Profile'  FROM `user_db` ");
+              ResultSet rs = dbc.getData("SELECT f_name as 'First Name', l_name as 'Last Name', email as 'Email', user_name as 'Username', sta_tus as 'Status' FROM `user_db` ");
               acc_tbl.setModel(DbUtils.resultSetToTableModel( rs));
         
-         byte[] img = rs.getBytes("img_pic");
-         format = new ImageIcon(img);
-         Image im = format.getImage().getScaledInstance(image.getWidth(),image.getHeight(), Image.SCALE_SMOOTH);
-            image.setIcon(new ImageIcon(im));
          
          
          }
@@ -54,6 +52,31 @@ public class account extends javax.swing.JInternalFrame {
        
         }
     }
+     public void update(){
+         try {
+         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
+         int row =acc_tbl.getSelectedRow();
+         String value = (acc_tbl.getModel().getValueAt(row, 0).toString());
+         String sql = "UPDATE user_db SET f_name=?,l-name=?, email=?, user_name=?"+value;
+            PreparedStatement pst = con.prepareStatement(sql);
+           
+            pst.setString(1, namf.getText());
+            pst.setString(2, naml.getText());
+            pst.setString(3, eml.getText());
+            pst.setString(4, username.getText());
+           ;
+            pst.executeUpdate();
+           if(row == 0){
+            JOptionPane.showMessageDialog(null, "Updated FAILED!");
+        }else{
+           JOptionPane.showMessageDialog(null, "Updated Successfully!");
+           displayData();
+           
+        }
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+     }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -65,10 +88,9 @@ public class account extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        UPD = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        image = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -82,42 +104,43 @@ public class account extends javax.swing.JInternalFrame {
         eml = new javax.swing.JTextField();
         namf = new javax.swing.JTextField();
         stat = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         acc_tbl = new javax.swing.JTable();
 
         jPanel1.setBackground(new java.awt.Color(222, 184, 135));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel4.setBackground(new java.awt.Color(255, 230, 179));
+        UPD.setBackground(new java.awt.Color(255, 230, 179));
+        UPD.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                UPDMouseClicked(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("DISPLAY DATA");
+        jLabel10.setText("UPDATE DATA");
         jLabel10.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel10MouseClicked(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout UPDLayout = new javax.swing.GroupLayout(UPD);
+        UPD.setLayout(UPDLayout);
+        UPDLayout.setHorizontalGroup(
+            UPDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        UPDLayout.setVerticalGroup(
+            UPDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
         );
 
-        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 110, 120, 30));
+        jPanel1.add(UPD, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 110, 120, 30));
 
         jPanel2.setBackground(new java.awt.Color(255, 238, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-        jPanel2.add(image, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 110, 92));
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel3.setText("Status:");
@@ -168,19 +191,6 @@ public class account extends javax.swing.JInternalFrame {
         stat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel2.add(stat, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 100, 130, 20));
 
-        jButton1.setText("jButton1");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 110, -1, -1));
-
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 750, 160));
 
         acc_tbl.setBackground(new java.awt.Color(255, 230, 204));
@@ -223,7 +233,7 @@ public class account extends javax.swing.JInternalFrame {
           username.setText(""+model.getValueAt(rowIndex, 3));
           stat.setText(""+model.getValueAt(rowIndex, 4));
          
-           image.setIcon(new ImageIcon());
+         
          
 
           
@@ -233,52 +243,29 @@ public class account extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_acc_tblMouseClicked
 
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
-  
-    }//GEN-LAST:event_jLabel10MouseClicked
-      
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        try{
-            String sql = "select images from users where name = 1";
-            
-            Statement statement = connection.prepareStatement(sql );
-            ResultSet rs = statement.executeQuery(sql);
-            if(rs. next()){
-                byte[]imagedata = rs.getBytes("images   ");
-                format = new ImageIcon(imagedata);
-                image.setIcon(format);
-            }
-          
-            
-        }catch (Exception e){
-            
-        }
-    
-    
-    }//GEN-LAST:event_jButton1MouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
-    }//GEN-LAST:event_jButton1ActionPerformed
-     public  ImageIcon ResizeImage(String ImagePath, byte[] pic) {
-    ImageIcon MyImage = null;
-        if(ImagePath !=null){
-            MyImage = new ImageIcon(ImagePath);
-        }else{
-            MyImage = new ImageIcon(pic);
+    }//GEN-LAST:event_jLabel10MouseClicked
+     public boolean validation(){
+  String name= naml.getText();
+String psam= namf.getText();
+String pmed= eml.getText();
+String pla= username.getText();
+    return false;
+
+     }
+    private void UPDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UPDMouseClicked
+        if(validation()== true){
+     update();
         }
-    Image img = MyImage.getImage();
-    Image newImg = img.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_SMOOTH);
-    ImageIcon image = new ImageIcon(newImg);
-    return image;
-}
-      private Connection connection;
-      
+    }//GEN-LAST:event_UPDMouseClicked
+         
+
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel UPD;
     private javax.swing.JTable acc_tbl;
     private javax.swing.JTextField eml;
-    private javax.swing.JLabel image;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -289,7 +276,6 @@ public class account extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField namf;
@@ -302,9 +288,7 @@ public class account extends javax.swing.JInternalFrame {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
   
-    String filename = null;
-    byte[] pic = null;
-    private ImageIcon format = null;
+
     
     
     

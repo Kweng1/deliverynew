@@ -65,7 +65,7 @@ private Connection con;
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT p_id as 'Product ID', p_name as 'Product Name', p_small as 'Small', p_medium as 'Medium', p_large as 'Large', img_pc as 'Picture' FROM product_tbl");
+            ResultSet rs = dbc.getData("SELECT p_id as 'Product ID', p_name as 'Product Name', p_small as 'Small', p_medium as 'Medium', p_large as 'Large' FROM product_tbl");
            
             pr_table.setModel(DbUtils.resultSetToTableModel(rs));
        
@@ -97,7 +97,7 @@ private Connection con;
         pm.setText("");
         pid.setText("");
          pl.setText("");
-         
+         picv.setIcon(null);
         
         
     }
@@ -157,14 +157,14 @@ if(pmed.equals("")){
          con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
          int row =pr_table.getSelectedRow();
          String value = (pr_table.getModel().getValueAt(row, 0).toString());
-         String sql = "UPDATE product_tbl SET p_name=?, p_small=?, p_medium=?, p_large=?, img_pc=? where ID="+value;
+         String sql = "UPDATE product_tbl SET p_name=?, p_small=?, p_medium=?, p_large=?, img_pc=? where p_id="+value;
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, pid.getText());
-            pst.setString(2, pname.getText());
-            pst.setString(3, ps.getText());
-            pst.setString(4, pm.getText());
-            pst.setString(5, pl.getText());
-            pst.setBytes(6, pic);
+           
+            pst.setString(1, pname.getText());
+            pst.setString(2, ps.getText());
+            pst.setString(3, pm.getText());
+            pst.setString(4, pl.getText());
+            pst.setBytes(5, pic);
             pst.executeUpdate();
            if(row == 0){
             JOptionPane.showMessageDialog(null, "Updated FAILED!");
@@ -205,17 +205,17 @@ if(pmed.equals("")){
      String tc = pr_table.getModel().getValueAt(row, 0).toString();
              try{
             con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
-             String sql = "select * from student_details where ID="+tc+"";
+             String sql = "select * from product_tbl where p_id="+tc+"";
              PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             if(rs.next()){
-            int id=rs.getInt("ID");
-            String name=rs.getString("NAME");
-            String sm=rs.getString("Small");
-            String med=rs.getString("Medium");
-            String lr=rs.getString("Large");
+            int id=rs.getInt("p_id");
+            String name=rs.getString("p_name");
+            String sm=rs.getString("p_small");
+            String med=rs.getString("p_medium");
+            String lr=rs.getString("p_large");
             
-            byte[] img = rs.getBytes("PROFILE");
+            byte[] img = rs.getBytes("img_pc");
             format = new ImageIcon(img);
             Image im =format.getImage().getScaledInstance(picv.getWidth(), picv.getHeight(), Image.SCALE_SMOOTH);
             picv.setIcon(new ImageIcon(im));
@@ -359,6 +359,11 @@ if(pmed.equals("")){
         pm.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pm.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pm.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pm.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                pmKeyPressed(evt);
+            }
+        });
         jPanel1.add(pm, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 210, 220, 30));
 
         pname.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -412,6 +417,16 @@ if(pmed.equals("")){
         ps.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         ps.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         ps.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        ps.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                psActionPerformed(evt);
+            }
+        });
+        ps.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                psKeyPressed(evt);
+            }
+        });
         jPanel1.add(ps, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 220, 30));
 
         refresh.setBackground(new java.awt.Color(222, 140, 135));
@@ -448,6 +463,16 @@ if(pmed.equals("")){
         pl.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pl.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                plActionPerformed(evt);
+            }
+        });
+        pl.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                plKeyPressed(evt);
+            }
+        });
         jPanel1.add(pl, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 260, 220, 30));
 
         jLabel12.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
@@ -483,17 +508,11 @@ if(pmed.equals("")){
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(picv, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(picv, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(picv, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(picv, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
         );
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 70, 150, 130));
@@ -535,7 +554,7 @@ if(pmed.equals("")){
          pid.setText(null);
          ps.setText(null);
          pl.setText(null);
-         
+         picv.setIcon(null);
             
     }//GEN-LAST:event_clearMouseClicked
 
@@ -575,22 +594,13 @@ if(pmed.equals("")){
     }//GEN-LAST:event_updateMouseEntered
 
     private void updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateMouseClicked
-        dbconnector dbc = new dbconnector();
-        int num = dbc.updateData("UPDATE product_tbl "
-                + "SET p_name = '"+pname.getText()+"', p_small='"+ps.getText()+"', " + "p_medium ='"+pm.getText()+"', p_large='"+pl.getText()+"',img_pc =   "
-                                + "WHERE p_id = '"+pid.getText()+"'");
-       
-        if(num == 0){
-           
-        }else{
-           JOptionPane.showMessageDialog(null, "Updated Successfully!");
-           displayData();
-           reset();
+         if(validation()== true){
+     update();
         }
     }//GEN-LAST:event_updateMouseClicked
 
     private void pr_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pr_tableMouseClicked
-      displayData(); 
+      table();
     }//GEN-LAST:event_pr_tableMouseClicked
 
     private void printMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseClicked
@@ -646,38 +656,46 @@ if(pmed.equals("")){
     }//GEN-LAST:event_addMouseExited
 
     private void btnImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "gif", "png");
-        chooser.addChoosableFileFilter(filter);
-        int result = chooser.showSaveDialog(null);
-
-        if (result == JFileChooser.APPROVE_OPTION){
-            File selectedFile = chooser.getSelectedFile();
-            path = selectedFile.getAbsolutePath();
-            picv.setIcon(ResizeImage(path,null));
-            imgPath = path;
-            File f = chooser.getSelectedFile();
-            filename = selectedFile.getAbsolutePath();
-        }else{
-            JOptionPane.showMessageDialog(null, "Canceled !");
-        }
-
-        try {
-            File image = new File(filename);
-            FileInputStream fis = new FileInputStream(image);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
-
-            for (int readNum; (readNum=fis.read(buf)) !=-1;){
-                bos.write(buf,0,readNum);
-            }
-            person_image=bos.toByteArray();
-
-        }catch(Exception e){
-            System.out.println(e);
-        }
+      upload();
     }//GEN-LAST:event_btnImageActionPerformed
+
+    private void psActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_psActionPerformed
+        
+    }//GEN-LAST:event_psActionPerformed
+
+    private void psKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_psKeyPressed
+         char c = evt.getKeyChar();
+        if(Character.isLetter(c)){
+        ps.setEditable(false);
+        JOptionPane.showMessageDialog(this, "Please enter number only");
+        }else{
+        ps.setEditable(true);
+        }
+    }//GEN-LAST:event_psKeyPressed
+
+    private void pmKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pmKeyPressed
+        char c = evt.getKeyChar();
+        if(Character.isLetter(c)){
+        pm.setEditable(false);
+        JOptionPane.showMessageDialog(this, "Please enter number only");
+        }else{
+        pm.setEditable(true);
+        }
+    }//GEN-LAST:event_pmKeyPressed
+
+    private void plActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_plActionPerformed
+
+    private void plKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_plKeyPressed
+        char c = evt.getKeyChar();
+        if(Character.isLetter(c)){
+        pl.setEditable(false);
+        JOptionPane.showMessageDialog(this, "Please enter number only");
+        }else{
+        pl.setEditable(true);
+        }
+    }//GEN-LAST:event_plKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
