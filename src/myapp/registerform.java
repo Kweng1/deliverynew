@@ -116,6 +116,7 @@ public class registerform extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         lbl_img = new javax.swing.JLabel();
         btnImage = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -336,7 +337,7 @@ public class registerform extends javax.swing.JFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/1laptop-removebg-preview (1).png"))); // NOI18N
         jPanel1.add(jLabel7);
-        jLabel7.setBounds(580, 230, 350, 230);
+        jLabel7.setBounds(580, 270, 350, 190);
 
         lbl_img.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         lbl_img.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -355,6 +356,15 @@ public class registerform extends javax.swing.JFrame {
         });
         jPanel1.add(btnImage);
         btnImage.setBounds(730, 190, 110, 23);
+
+        jButton1.setText("ADD");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1);
+        jButton1.setBounds(750, 220, 70, 23);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -402,6 +412,7 @@ public class registerform extends javax.swing.JFrame {
         String uname = username.getText();
         String pass = String.valueOf(password.getPassword());
         String cpass = confirm.getText();
+        
        
         if (uname.equals(""))
         {
@@ -421,7 +432,7 @@ public class registerform extends javax.swing.JFrame {
         else{
         PreparedStatement ps;
 ResultSet rs;
-String registerUserQuery = "INSERT INTO `user_db`(`f_name`, `l_name`, `email`, `user_name`, `pass_word`, img_pic) VALUES (?,?,?,?,?,?)";
+String registerUserQuery = "INSERT INTO `user_db`(`f_name`, `l_name`, `email`, `user_name`, `pass_word`, img_pic, sta_tus) VALUES (?,?,?,?,?,?,'Pending')";
 
 try {
     ps = login_db.getConnection().prepareStatement(registerUserQuery);
@@ -496,6 +507,20 @@ try {
     private void lbl_imgMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_imgMouseClicked
         
     }//GEN-LAST:event_lbl_imgMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       try{
+           dbconnector dbc = new dbconnector();
+            ResultSet rs = dbc.getData("SELECT * FROM img WHERE id = 1");
+            if(rs.next()){
+                lbl_img.setIcon(ResizeImage(null, rs.getBytes("image")));
+                
+            }
+           
+       }catch(Exception e){
+           
+       }
+    }//GEN-LAST:event_jButton1ActionPerformed
     
      public boolean  checkUsername(String username)
     {
@@ -564,6 +589,7 @@ try {
     private javax.swing.JTextField email1;
     private javax.swing.JTextField firstname;
     private javax.swing.JTextField fname1;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

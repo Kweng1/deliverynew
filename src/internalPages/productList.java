@@ -7,17 +7,31 @@ package internalPages;
 
 import config.dbconnector;
 import java.awt.Color;
+import java.awt.Image;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import net.proteanit.sql.DbUtils;
+import java.awt.*;
+import java.io.*;
+import static java.lang.String.format;
+import javax.swing.*;
 
 
 /**
@@ -26,9 +40,16 @@ import net.proteanit.sql.DbUtils;
  */
 public class productList extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form userPage
-     */
+    
+    public byte[] imageBytes;
+    String path;
+    String action;
+    String filename=null;
+    String imgPath = null;
+   byte[] person_image = null; 
+DefaultTableModel model;
+private Connection con;
+    
     public productList() {
         initComponents();
         displayData();
@@ -44,7 +65,7 @@ public class productList extends javax.swing.JInternalFrame {
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT p_id as 'Product ID', p_name as 'Product Name', p_small as 'Small', p_medium as 'Medium', p_large as 'Large' FROM product_tbl");
+            ResultSet rs = dbc.getData("SELECT p_id as 'Product ID', p_name as 'Product Name', p_small as 'Small', p_medium as 'Medium', p_large as 'Large', img_pc as 'Picture' FROM product_tbl");
            
             pr_table.setModel(DbUtils.resultSetToTableModel(rs));
        
@@ -53,6 +74,20 @@ public class productList extends javax.swing.JInternalFrame {
        
         }
     }
+    public  ImageIcon ResizeImage(String ImagePath, byte[] pic) {
+    ImageIcon MyImage = null;
+        if(ImagePath !=null){
+            MyImage = new ImageIcon(ImagePath);
+        }else{
+            MyImage = new ImageIcon(pic);
+        }
+    Image img = MyImage.getImage();
+    Image newImg = img.getScaledInstance(picv.getWidth(), picv.getHeight(), Image.SCALE_SMOOTH);
+    ImageIcon image = new ImageIcon(newImg);
+    return image;
+}
+
+
     
     public void reset(){
         
@@ -66,7 +101,142 @@ public class productList extends javax.swing.JInternalFrame {
         
         
     }
+         public boolean validation(){
+  String name= pname.getText();
+String psam= ps.getText();
+String pmed= pm.getText();
+String pla= pl.getText();
+
+ if (name.equals("")){
+ JOptionPane.showMessageDialog(this, "PLEASE ENTER NAME");
+ return false;
+ }
+ if(psam.equals("")){
+ JOptionPane.showMessageDialog(this, "PLEASE ENTER THE PRICE OF SMALL PRODUCT");
+ return false;
+ }
+if(pmed.equals("")){
+ JOptionPane.showMessageDialog(this, "PLEASE ENTER THE PRICE OF MEDIUM PRODUCT");
+ return false;
+ }     
+ if(pla.equals("")){
+ JOptionPane.showMessageDialog(this, "PLEASE ENTER THE PRICE OF MEDIUM PRODUCT");
+ return false;
+ }    
+  
+    if(picv.getIcon()==null){
+ JOptionPane.showMessageDialog(this, "PLEASE ENTER PHOTO");
+ return false;
+ }
+   return true;  
+ }
     
+     public void add(){
+      try{
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
+            String sql = "INSERT INTO product_tbl  ( 'p_name', 'p_small', 'p_medium' , 'p_large', 'img_pc') VALUES ('"+pname.getText()+"','"+ps.getText()+"','"+pm.getText()+"','"+pl.getText()+"',? )"; 
+            PreparedStatement pst = con.prepareStatement(sql);
+            
+            pst.setString(1, pname.getText());
+            pst.setString(2, ps.getText());
+            pst.setString(3, pm.getText());
+            pst.setString(4, pl.getText());
+            pst.setBytes(5, pic);
+            pst.executeUpdate();
+           
+            displayData();
+               reset(); 
+        JOptionPane.showMessageDialog(this, "ADDED SUCCESSFULLY");
+            }catch(SQLException e){
+                System.err.println("Cannot connect to database: " + e.getMessage());
+            }
+     
+     }
+    public void update(){
+         try {
+         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
+         int row =pr_table.getSelectedRow();
+         String value = (pr_table.getModel().getValueAt(row, 0).toString());
+         String sql = "UPDATE product_tbl SET p_name=?, p_small=?, p_medium=?, p_large=?, img_pc=? where ID="+value;
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, pid.getText());
+            pst.setString(2, pname.getText());
+            pst.setString(3, ps.getText());
+            pst.setString(4, pm.getText());
+            pst.setString(5, pl.getText());
+            pst.setBytes(6, pic);
+            pst.executeUpdate();
+           if(row == 0){
+            JOptionPane.showMessageDialog(null, "Updated FAILED!");
+        }else{
+           JOptionPane.showMessageDialog(null, "Updated Successfully!");
+           displayData();
+           reset();
+        }
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+     }
+     public void upload(){
+     JFileChooser chose = new JFileChooser();
+     chose.showOpenDialog(null);
+     File f = chose.getSelectedFile();
+         filename = f.getAbsolutePath();
+         ImageIcon ii = new ImageIcon(filename);
+         Image img = ii.getImage().getScaledInstance(picv.getWidth(), picv.getHeight(), Image.SCALE_SMOOTH);
+     picv.setIcon(new ImageIcon(img));
+         try {
+             File ig = new File(filename);
+             FileInputStream is = new FileInputStream(ig);
+             ByteArrayOutputStream bos =  new ByteArrayOutputStream();
+             byte[] buf = new byte [1024];
+             for (int rnum; (rnum = is.read(buf))!=-1;){
+             bos.write(buf, 0, rnum);
+             }
+             pic =bos.toByteArray();
+         } catch (Exception e) {
+             JOptionPane.showMessageDialog(null, e);
+         }
+          
+    }
+      public void table(){
+     int row = pr_table.getSelectedRow();
+     int cc = pr_table.getSelectedColumn();
+     String tc = pr_table.getModel().getValueAt(row, 0).toString();
+             try{
+            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
+             String sql = "select * from student_details where ID="+tc+"";
+             PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if(rs.next()){
+            int id=rs.getInt("ID");
+            String name=rs.getString("NAME");
+            String sm=rs.getString("Small");
+            String med=rs.getString("Medium");
+            String lr=rs.getString("Large");
+            
+            byte[] img = rs.getBytes("PROFILE");
+            format = new ImageIcon(img);
+            Image im =format.getImage().getScaledInstance(picv.getWidth(), picv.getHeight(), Image.SCALE_SMOOTH);
+            picv.setIcon(new ImageIcon(im));
+            
+            
+                pid.setText(""+id);
+                pname.setText(name);
+                ps.setText(sm);
+                pl.setText(lr);
+                pm.setText(med);
+                
+                
+         
+            }
+             pst.close();
+             rs.close();
+         } catch (Exception e) {
+         JOptionPane.showMessageDialog(null, e);
+         }
+        }
+     
     
      Color navcolor= new Color(217,222,135);
     Color headcolor= new Color(222,140,135);
@@ -105,6 +275,9 @@ public class productList extends javax.swing.JInternalFrame {
         jSeparator1 = new javax.swing.JSeparator();
         add = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        picv = new javax.swing.JLabel();
+        btnImage = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
 
@@ -114,7 +287,7 @@ public class productList extends javax.swing.JInternalFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("PRODUCT LIST");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 700, 30));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 720, 30));
 
         update.setBackground(new java.awt.Color(222, 140, 135));
         update.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -147,7 +320,7 @@ public class productList extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(pr_table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 70, 360, 320));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 210, 360, 180));
 
         delete.setBackground(new java.awt.Color(222, 140, 135));
         delete.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -304,6 +477,35 @@ public class productList extends javax.swing.JInternalFrame {
 
         jPanel1.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 80, 30));
 
+        picv.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(picv, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(picv, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 70, 150, 130));
+
+        btnImage.setText("BROWSE");
+        btnImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImageActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -375,7 +577,7 @@ public class productList extends javax.swing.JInternalFrame {
     private void updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateMouseClicked
         dbconnector dbc = new dbconnector();
         int num = dbc.updateData("UPDATE product_tbl "
-                + "SET p_name = '"+pname.getText()+"', p_small='"+ps.getText()+"', " + "p_medium ='"+pm.getText()+"', p_large='"+pl.getText()+"'  "
+                + "SET p_name = '"+pname.getText()+"', p_small='"+ps.getText()+"', " + "p_medium ='"+pm.getText()+"', p_large='"+pl.getText()+"',img_pc =   "
                                 + "WHERE p_id = '"+pid.getText()+"'");
        
         if(num == 0){
@@ -448,21 +650,9 @@ model.setColumnIdentifiers(columnIdentifiers);
     }//GEN-LAST:event_refreshMouseExited
 
     private void addMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseClicked
-        dbconnector dbc = new dbconnector();
-        dbc.insertData("INSERT INTO product_tbl ( p_name, p_small, p_medium, p_large) "
-                
-            + "VALUES ( '"+pname.getText()+"','"+ps.getText()+"','"+pm.getText()+"','"+pl.getText()+"')");
-       if (pname.equals(""))
-        {
-            JOptionPane.showMessageDialog(null, "All Fields Are Required!");
-        }else if (pl.equals(""))
-        {
-            
-        JOptionPane.showMessageDialog(null, "Add Successfully!");
-        displayData();
-        reset();
-        
-        }    
+     if (validation () == true){
+         add();
+     }
     }//GEN-LAST:event_addMouseClicked
 
     private void addMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseEntered
@@ -473,10 +663,45 @@ model.setColumnIdentifiers(columnIdentifiers);
         add.setBackground(headcolor);
     }//GEN-LAST:event_addMouseExited
 
+    private void btnImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "gif", "png");
+        chooser.addChoosableFileFilter(filter);
+        int result = chooser.showSaveDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION){
+            File selectedFile = chooser.getSelectedFile();
+            path = selectedFile.getAbsolutePath();
+            picv.setIcon(ResizeImage(path,null));
+            imgPath = path;
+            File f = chooser.getSelectedFile();
+            filename = selectedFile.getAbsolutePath();
+        }else{
+            JOptionPane.showMessageDialog(null, "Canceled !");
+        }
+
+        try {
+            File image = new File(filename);
+            FileInputStream fis = new FileInputStream(image);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+
+            for (int readNum; (readNum=fis.read(buf)) !=-1;){
+                bos.write(buf,0,readNum);
+            }
+            person_image=bos.toByteArray();
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_btnImageActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel REFRESH;
     private javax.swing.JPanel add;
+    private javax.swing.JButton btnImage;
     private javax.swing.JPanel clear;
     private javax.swing.JPanel delete;
     private javax.swing.JLabel jLabel1;
@@ -491,8 +716,10 @@ model.setColumnIdentifiers(columnIdentifiers);
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel picv;
     private javax.swing.JTextField pid;
     private javax.swing.JTextField pl;
     private javax.swing.JTextField pm;
@@ -503,4 +730,10 @@ model.setColumnIdentifiers(columnIdentifiers);
     private javax.swing.JPanel refresh;
     private javax.swing.JPanel update;
     // End of variables declaration//GEN-END:variables
+
+ String filen= null;
+byte[] pic = null; 
+private ImageIcon format = null;
+
+   
 }

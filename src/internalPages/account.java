@@ -11,7 +11,9 @@ import javax.swing.*;
 import java.io.*;
 import java.awt.Image;
 import java.awt.*;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableModel;
@@ -37,7 +39,7 @@ public class account extends javax.swing.JInternalFrame {
     public void displayData(){
          try {
               dbconnector dbc = new dbconnector();
-              ResultSet rs = dbc.getData("SELECT f_name as 'First Name', l_name as 'Last Name', email as 'Email', user_name as 'Username', img_pic  FROM `user_db` ");
+              ResultSet rs = dbc.getData("SELECT f_name as 'First Name', l_name as 'Last Name', email as 'Email', user_name as 'Username', sta_tus as 'Status',img_pic as 'Profile'  FROM `user_db` ");
               acc_tbl.setModel(DbUtils.resultSetToTableModel( rs));
         
          byte[] img = rs.getBytes("img_pic");
@@ -75,13 +77,12 @@ public class account extends javax.swing.JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         username = new javax.swing.JTextField();
         naml = new javax.swing.JTextField();
         eml = new javax.swing.JTextField();
         namf = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        stat = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         acc_tbl = new javax.swing.JTable();
 
@@ -116,7 +117,7 @@ public class account extends javax.swing.JInternalFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-        jPanel2.add(image, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 120, 92));
+        jPanel2.add(image, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 110, 92));
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel3.setText("Status:");
@@ -147,28 +148,6 @@ public class account extends javax.swing.JInternalFrame {
         jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
         jPanel2.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 590, 20));
 
-        jPanel3.setBackground(new java.awt.Color(255, 230, 179));
-
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("BROWSE");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-        );
-
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 110, 100, -1));
-
         username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         username.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel2.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 60, 130, 20));
@@ -185,9 +164,22 @@ public class account extends javax.swing.JInternalFrame {
         namf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel2.add(namf, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 60, 130, 20));
 
-        jTextField5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel2.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 100, 130, 20));
+        stat.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        stat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.add(stat, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 100, 130, 20));
+
+        jButton1.setText("jButton1");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 110, -1, -1));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 750, 160));
 
@@ -219,6 +211,7 @@ public class account extends javax.swing.JInternalFrame {
 
     private void acc_tblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_acc_tblMouseClicked
          int rowIndex = acc_tbl.getSelectedRow();
+         
       if(rowIndex < 0){
           
       }else{
@@ -228,8 +221,11 @@ public class account extends javax.swing.JInternalFrame {
           eml.setText(""+model.getValueAt(rowIndex, 2));
           
           username.setText(""+model.getValueAt(rowIndex, 3));
-          
+          stat.setText(""+model.getValueAt(rowIndex, 4));
          
+           image.setIcon(new ImageIcon());
+         
+
           
           
       }
@@ -239,14 +235,51 @@ public class account extends javax.swing.JInternalFrame {
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
   
     }//GEN-LAST:event_jLabel10MouseClicked
+      
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        try{
+            String sql = "select images from users where name = 1";
+            
+            Statement statement = connection.prepareStatement(sql );
+            ResultSet rs = statement.executeQuery(sql);
+            if(rs. next()){
+                byte[]imagedata = rs.getBytes("images   ");
+                format = new ImageIcon(imagedata);
+                image.setIcon(format);
+            }
+          
+            
+        }catch (Exception e){
+            
+        }
+    
+    
+    }//GEN-LAST:event_jButton1MouseClicked
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       
+    }//GEN-LAST:event_jButton1ActionPerformed
+     public  ImageIcon ResizeImage(String ImagePath, byte[] pic) {
+    ImageIcon MyImage = null;
+        if(ImagePath !=null){
+            MyImage = new ImageIcon(ImagePath);
+        }else{
+            MyImage = new ImageIcon(pic);
+        }
+    Image img = MyImage.getImage();
+    Image newImg = img.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_SMOOTH);
+    ImageIcon image = new ImageIcon(newImg);
+    return image;
+}
+      private Connection connection;
+      
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable acc_tbl;
     private javax.swing.JTextField eml;
     private javax.swing.JLabel image;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -256,13 +289,12 @@ public class account extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField namf;
     private javax.swing.JTextField naml;
+    private javax.swing.JTextField stat;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 

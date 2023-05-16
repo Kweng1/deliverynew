@@ -8,6 +8,7 @@ import java.sql.*;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import static javax.management.remote.JMXConnectorFactory.connect;
 
 public class dbconnector {
     
@@ -21,6 +22,15 @@ public class dbconnector {
             System.err.println("Cannot connect to database: "+ e.getMessage());
         }
     }
+    public Connection connect_db(){
+              try{
+                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mike_db", "root", "");
+            }catch(SQLException ex){
+                    System.out.println("Can't connect to database: "+ex.getMessage());
+            }
+              return connection;
+        }
+        
     
      public ResultSet getData(String sql) throws SQLException {
         Statement statement = connection.createStatement();
