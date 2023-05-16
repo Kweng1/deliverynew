@@ -193,7 +193,7 @@ public class orderinfo extends javax.swing.JInternalFrame {
 
         jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 380, -1, -1));
 
-        order_table.setBackground(new java.awt.Color(0, 204, 204));
+        order_table.setBackground(new java.awt.Color(255, 230, 204));
         order_table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 order_tableMouseClicked(evt);

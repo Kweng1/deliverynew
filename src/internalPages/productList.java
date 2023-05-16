@@ -452,12 +452,17 @@ model.setColumnIdentifiers(columnIdentifiers);
         dbc.insertData("INSERT INTO product_tbl ( p_name, p_small, p_medium, p_large) "
                 
             + "VALUES ( '"+pname.getText()+"','"+ps.getText()+"','"+pm.getText()+"','"+pl.getText()+"')");
-       
+       if (pname.equals(""))
+        {
+            JOptionPane.showMessageDialog(null, "All Fields Are Required!");
+        }else if (pl.equals(""))
+        {
+            
         JOptionPane.showMessageDialog(null, "Add Successfully!");
         displayData();
         reset();
         
-        
+        }    
     }//GEN-LAST:event_addMouseClicked
 
     private void addMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseEntered

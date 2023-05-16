@@ -10,7 +10,9 @@ import config.login_db;
 import internalPages.account;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
@@ -21,6 +23,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -34,7 +37,24 @@ public class registerform extends javax.swing.JFrame {
     
     public registerform() {
         initComponents();
+        
+        
+        
     }
+    
+    public  ImageIcon ResizeImage(String ImagePath, byte[] pic) {
+    ImageIcon MyImage = null;
+        if(ImagePath !=null){
+            MyImage = new ImageIcon(ImagePath);
+        }else{
+            MyImage = new ImageIcon(pic);
+        }
+    Image img = MyImage.getImage();
+    Image newImg = img.getScaledInstance(lbl_img.getWidth(), lbl_img.getHeight(), Image.SCALE_SMOOTH);
+    ImageIcon image = new ImageIcon(newImg);
+    return image;
+}
+
     
    public String hashPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -42,6 +62,12 @@ public class registerform extends javax.swing.JFrame {
         byte[] digest = md.digest();
         return String.format("%064x", new java.math.BigInteger(1, digest));
 }  
+   public byte[] imageBytes;
+    String path;
+    String file=null;
+    String imgPath = null;
+    public byte[] image_p = null;
+    
 
      Color navcolor= new Color(204,204,204);
     Color headcolor= new Color(153,153,153);
@@ -310,9 +336,14 @@ public class registerform extends javax.swing.JFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/1laptop-removebg-preview (1).png"))); // NOI18N
         jPanel1.add(jLabel7);
-        jLabel7.setBounds(580, 200, 350, 260);
+        jLabel7.setBounds(580, 230, 350, 230);
 
         lbl_img.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lbl_img.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbl_imgMouseClicked(evt);
+            }
+        });
         jPanel1.add(lbl_img);
         lbl_img.setBounds(730, 70, 110, 110);
 
@@ -371,7 +402,7 @@ public class registerform extends javax.swing.JFrame {
         String uname = username.getText();
         String pass = String.valueOf(password.getPassword());
         String cpass = confirm.getText();
-        
+       
         if (uname.equals(""))
         {
             JOptionPane.showMessageDialog(null, "All Fields Are Required!");
@@ -390,7 +421,7 @@ public class registerform extends javax.swing.JFrame {
         else{
         PreparedStatement ps;
 ResultSet rs;
-String registerUserQuery = "INSERT INTO `user_db`(`f_name`, `l_name`, `email`, `user_name`, `pass_word`) VALUES (?,?,?,?,?)";
+String registerUserQuery = "INSERT INTO `user_db`(`f_name`, `l_name`, `email`, `user_name`, `pass_word`, img_pic) VALUES (?,?,?,?,?,?)";
 
 try {
     ps = login_db.getConnection().prepareStatement(registerUserQuery);
@@ -399,7 +430,7 @@ try {
     ps.setString(3, mail);
     ps.setString(4, uname);
     ps.setString(5, hashPassword(pass));
-    
+    ps.setBytes(6, person_image);
    
  
     if(ps.executeUpdate() > 0){
@@ -413,9 +444,9 @@ try {
         JOptionPane.showMessageDialog(null, "Error: Check Your Information");
     }
 } catch (SQLException ex) {
-    Logger.getLogger(registerform.class.getName()).log(Level.SEVERE, null, ex);
+  JOptionPane.showMessageDialog(null, ex);
 }catch (NoSuchAlgorithmException ex) {
-    Logger.getLogger(registerform.class.getName()).log(Level.SEVERE, null, ex); 
+   JOptionPane.showMessageDialog(null, ex);; 
         
         }
         }
@@ -426,24 +457,46 @@ try {
        lf.setVisible(true);
        this.dispose();
     }//GEN-LAST:event_cancelActionPerformed
-
+    
     private void btnImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageActionPerformed
-       JFileChooser chooser = new JFileChooser();
-       chooser.showOpenDialog(null);
-       File f =chooser.getSelectedFile();
-       filename = f.getAbsolutePath();
-       ImageIcon imageIcon = new ImageIcon(new ImageIcon(filename).getImage().getScaledInstance(lbl_img.getWidth(),lbl_img.getHeight(), Image.SCALE_SMOOTH));
-       lbl_img.setIcon(imageIcon);
-       
-       try{
-           File image = new File (filename);
-           
-       }
-       catch(Exception e){
-           JOptionPane.showMessageDialog(null,e);
-       }
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "gif", "png");
+        chooser.addChoosableFileFilter(filter);
+        int result = chooser.showSaveDialog(null);
+        
+        if (result == JFileChooser.APPROVE_OPTION){
+            File selectedFile = chooser.getSelectedFile();
+            path = selectedFile.getAbsolutePath();
+            lbl_img.setIcon(ResizeImage(path,null));
+            imgPath = path;
+            File f = chooser.getSelectedFile();
+            filename = selectedFile.getAbsolutePath();
+        }else{
+        JOptionPane.showMessageDialog(null, "Canceled !");
+        }
+        
+      
+        try {
+                File image = new File(filename);
+                FileInputStream fis = new FileInputStream(image);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                byte[] buf = new byte[1024];
+                
+                for (int readNum; (readNum=fis.read(buf)) !=-1;){
+                 bos.write(buf,0,readNum);
+                }
+                person_image=bos.toByteArray();
+                
+        }catch(Exception e){
+            System.out.println(e);
+        }
     }//GEN-LAST:event_btnImageActionPerformed
-
+    
+    private void lbl_imgMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_imgMouseClicked
+        
+    }//GEN-LAST:event_lbl_imgMouseClicked
+    
      public boolean  checkUsername(String username)
     {
          PreparedStatement ps;      

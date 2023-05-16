@@ -379,10 +379,7 @@ try {
 
        db.userni.setText("Welcome "+user+ "!");
        
-       account acc = new account();
       
-       
-       acc.namel3.setText(user);
        this.dispose();
 
     }

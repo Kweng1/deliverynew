@@ -562,7 +562,7 @@ public class customerReport extends javax.swing.JInternalFrame {
 
     private void addMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseClicked
         dbconnector dbc = new dbconnector();
-        dbc.insertData("INSERT INTO customer_tbl ( c_name, c_add,c_con, c_order, c_quant, c_price, c_tp, c_size) "
+        dbc.insertData("INSERT INTO customer_tbl ( c_name, c_add,c_con, c_order,, c_size, c_quant, c_price, c_tp, c_size) "
                 + "VALUES ( '"+cname.getText()+"','"+cadd.getText()+"','"+ccon.getText()+"','"+corder.getText()+"','" +cquant.getText()+"','"+cprice.getText()+"','"+ctp.getText()+"','"+size.getText()+"')");
         JOptionPane.showMessageDialog(null, "Add Successfully!");
         displayData();
