@@ -167,11 +167,12 @@ if(pmed.equals("")){
             pst.setBytes(5, pic);
             pst.executeUpdate();
            if(row == 0){
-            JOptionPane.showMessageDialog(null, "Updated FAILED!");
-        }else{
-           JOptionPane.showMessageDialog(null, "Updated Successfully!");
-           displayData();
+            JOptionPane.showMessageDialog(null, "Updated Successfully!");
+            displayData();
            reset();
+        }else{
+           JOptionPane.showMessageDialog(null, "Updated Failed!");
+           
         }
          } catch (Exception e) {
              e.printStackTrace();

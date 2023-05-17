@@ -301,7 +301,7 @@ public class dashBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_customer_reportMouseExited
 
     private void customer_reportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customer_reportMouseClicked
-      customerReport up = new customerReport();
+      customerOrder up = new customerOrder();
       maindesktop.add(up).setVisible(true);
     }//GEN-LAST:event_customer_reportMouseClicked
 
@@ -327,7 +327,7 @@ public class dashBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_deliveryrinfoMouseExited
 
     private void deliveryrinfoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deliveryrinfoMouseClicked
-        orderinfo oi = new orderinfo();
+        customerReport oi = new customerReport();
      maindesktop.add(oi).setVisible(true);
     }//GEN-LAST:event_deliveryrinfoMouseClicked
 
