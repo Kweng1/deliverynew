@@ -332,8 +332,7 @@ public class dashBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_deliveryrinfoMouseClicked
 
     private void dashpaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dashpaneMouseClicked
-        dashBoard dbp = new dashBoard();
-        maindesktop.add(dbp).setVisible(true);
+        
     
     }//GEN-LAST:event_dashpaneMouseClicked
 

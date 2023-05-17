@@ -45,16 +45,14 @@ public class changepass extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        oldpassword = new javax.swing.JLabel();
         username = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         cancel = new javax.swing.JButton();
         update = new javax.swing.JButton();
-        conpass = new javax.swing.JTextField();
         newpass = new javax.swing.JPasswordField();
         jLabel7 = new javax.swing.JLabel();
-        oldpass = new javax.swing.JPasswordField();
+        conpass = new javax.swing.JPasswordField();
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -88,12 +86,6 @@ public class changepass extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(0, 0, 0, 80));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        oldpassword.setBackground(new java.awt.Color(0, 121, 111));
-        oldpassword.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        oldpassword.setForeground(new java.awt.Color(217, 222, 135));
-        oldpassword.setText("Old Password:");
-        jPanel3.add(oldpassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 130, 20));
-
         username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         username.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel3.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 30, 260, 30));
@@ -102,13 +94,13 @@ public class changepass extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(217, 222, 135));
         jLabel1.setText("Confirm Password:");
-        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 170, 30));
+        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 170, 30));
 
         jLabel3.setBackground(new java.awt.Color(0, 121, 111));
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(217, 222, 135));
         jLabel3.setText("New Password:");
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 140, 20));
+        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 140, 20));
 
         cancel.setBackground(new java.awt.Color(222, 141, 135));
         cancel.setText("CANCEL");
@@ -118,7 +110,7 @@ public class changepass extends javax.swing.JFrame {
                 cancelActionPerformed(evt);
             }
         });
-        jPanel3.add(cancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 250, 90, 30));
+        jPanel3.add(cancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 220, 90, 30));
 
         update.setBackground(new java.awt.Color(222, 141, 135));
         update.setText("CONFIRM");
@@ -127,16 +119,7 @@ public class changepass extends javax.swing.JFrame {
                 updateActionPerformed(evt);
             }
         });
-        jPanel3.add(update, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 250, 90, 30));
-
-        conpass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        conpass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        conpass.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                conpassActionPerformed(evt);
-            }
-        });
-        jPanel3.add(conpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 260, 30));
+        jPanel3.add(update, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 220, 90, 30));
 
         newpass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         newpass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -145,7 +128,7 @@ public class changepass extends javax.swing.JFrame {
                 newpassActionPerformed(evt);
             }
         });
-        jPanel3.add(newpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 260, 30));
+        jPanel3.add(newpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, 260, 30));
 
         jLabel7.setBackground(new java.awt.Color(0, 121, 111));
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
@@ -153,8 +136,9 @@ public class changepass extends javax.swing.JFrame {
         jLabel7.setText("Username:");
         jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 31, 130, 20));
 
-        oldpass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel3.add(oldpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, 260, 30));
+        conpass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        conpass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel3.add(conpass, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 140, 260, 30));
 
         jPanel1.add(jPanel3);
         jPanel3.setBounds(240, 80, 520, 330);
@@ -186,15 +170,14 @@ public class changepass extends javax.swing.JFrame {
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
       String usename,confirmpassword;
-      usename = username.getText();  
-      String op = String.valueOf(oldpass.getPassword());
+      usename = username.getText();      
       String newpassword = String.valueOf(newpass.getPassword());
       confirmpassword = conpass.getText();
       
       if (usename.equals(""))
         {
             JOptionPane.showMessageDialog(null, "All Fields Are Required!");
-        }else if (newpassword.equals("")||op.equals(""))
+        }else if (newpassword.equals(""))
         {
             JOptionPane.showMessageDialog(null, "Add a password");
         }else if (!newpassword.equals(confirmpassword))
@@ -230,10 +213,6 @@ String changeQuery = ("UPDATE user_db SET pass_word = ? where user_name = '"+use
       
      
     }//GEN-LAST:event_updateActionPerformed
-
-    private void conpassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conpassActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_conpassActionPerformed
 
     private void newpassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newpassActionPerformed
         // TODO add your handling code here:
@@ -276,7 +255,7 @@ String changeQuery = ("UPDATE user_db SET pass_word = ? where user_name = '"+use
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
-    private javax.swing.JTextField conpass;
+    private javax.swing.JPasswordField conpass;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
@@ -286,8 +265,6 @@ String changeQuery = ("UPDATE user_db SET pass_word = ? where user_name = '"+use
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPasswordField newpass;
-    private javax.swing.JPasswordField oldpass;
-    private javax.swing.JLabel oldpassword;
     private javax.swing.JButton update;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables

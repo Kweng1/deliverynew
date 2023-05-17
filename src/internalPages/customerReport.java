@@ -264,7 +264,7 @@ private Connection con;
         });
         jScrollPane1.setViewportView(o_table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 690, 210));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 720, 210));
 
         logout.setBackground(new java.awt.Color(222, 140, 135));
         logout.addMouseListener(new java.awt.event.MouseAdapter() {
