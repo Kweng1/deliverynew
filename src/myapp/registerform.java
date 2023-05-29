@@ -387,7 +387,7 @@ public class registerform extends javax.swing.JFrame {
         else{
         PreparedStatement ps;
 ResultSet rs;
-String registerUserQuery = "INSERT INTO `user_db`(`f_name`, `l_name`, `email`, `user_name`, `pass_word`,  sta_tus) VALUES (?,?,?,?,?,'Pending')";
+String registerUserQuery = "INSERT INTO `user_db`(`f_name`, `l_name`, `email`, `user_name`, `pass_word`) VALUES (?,?,?,?,?)";
 
 try {
     ps = login_db.getConnection().prepareStatement(registerUserQuery);

@@ -81,7 +81,7 @@ private Connection con;
             
             
                
-                status.setText(stat);
+                status.getSelectedIndex();
                      
                 
          
@@ -95,22 +95,24 @@ private Connection con;
      public void update(){
          try {
          con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
-         int row =o_table.getSelectedRow();
-         String value = (o_table.getModel().getValueAt(row, 0).toString());
-         String sql = "UPDATE customer_tbl SET sta_tus=? where c_id="+value;
-            PreparedStatement pst = con.prepareStatement(sql);
-           
-            pst.setString(1, status.getText());
-            
-            pst.executeUpdate();
-           if(row == 0){
-            JOptionPane.showMessageDialog(null, "Updated Successfuly");
-            displayData();
-           reset();
-        }else{
-           JOptionPane.showMessageDialog(null, "Update Failed !");
-           
-        }
+         int row = o_table.getSelectedRow();
+if (row >= 0) {
+    String value = o_table.getModel().getValueAt(row, 0).toString();
+    String sql = "UPDATE customer_tbl SET sta_tus=? WHERE c_id=?";
+    PreparedStatement pst = con.prepareStatement(sql);
+    pst.setString(1, status.getSelectedItem().toString());
+    pst.setString(2, value);
+    int rowsUpdated = pst.executeUpdate();
+    if (rowsUpdated > 0) {
+        JOptionPane.showMessageDialog(null, "Updated Successfully");
+        displayData();
+        reset();
+    } else {
+        JOptionPane.showMessageDialog(null, "Update Failed!");
+    }
+} else {
+    JOptionPane.showMessageDialog(null, "No row selected!");
+}
          } catch (Exception e) {
              e.printStackTrace();
          }
@@ -118,7 +120,7 @@ private Connection con;
     
     public void reset(){
         
-       status.setText("");
+       status.getSelectedIndex();
         
         
     }
@@ -150,10 +152,10 @@ private Connection con;
         logout = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         searchbar = new javax.swing.JTextField();
-        status = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        status = new javax.swing.JComboBox<>();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -264,7 +266,7 @@ private Connection con;
         });
         jScrollPane1.setViewportView(o_table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 720, 210));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 700, 210));
 
         logout.setBackground(new java.awt.Color(222, 140, 135));
         logout.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -296,9 +298,6 @@ private Connection con;
         });
         jPanel1.add(searchbar, new org.netbeans.lib.awtextra.AbsoluteConstraints(289, 40, 330, 30));
 
-        status.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jPanel1.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 170, 30));
-
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel2.setText("STATUS:");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 80, 30));
@@ -320,6 +319,10 @@ private Connection con;
             }
         });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 100, 90, 30));
+
+        status.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DELIVERED", "PENDING" }));
+        jPanel1.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 170, 30));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 740, 430));
 
@@ -445,6 +448,6 @@ private Connection con;
     private javax.swing.JPanel refresh;
     private javax.swing.JPanel search;
     private javax.swing.JTextField searchbar;
-    private javax.swing.JTextField status;
+    private javax.swing.JComboBox<String> status;
     // End of variables declaration//GEN-END:variables
 }

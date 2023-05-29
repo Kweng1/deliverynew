@@ -9,6 +9,8 @@ import config.dbconnector;
 import config.login_db;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,6 +29,7 @@ import javax.swing.table.TableRowSorter;
 import myapp.loginForm;
 import net.proteanit.sql.DbUtils;
 import static java.lang.String.format;
+import javax.swing.JComboBox;
 
 
 
@@ -34,6 +37,8 @@ import static java.lang.String.format;
  *
  * @author admin
  */
+
+
 public class customerOrder extends javax.swing.JInternalFrame {
 
      public byte[] imageBytes;
@@ -52,8 +57,25 @@ private Connection con;
         BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
         bi.setNorthPane(null);
         
-       
-    }
+       csize = new JComboBox<>();
+    csize.addItem("Small");
+    csize.addItem("Medium");
+    csize.addItem("Large"); 
+        csize.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            generatePrice();
+        }
+
+            private void generatePrice() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        
+        jPanel1.add(csize, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 250, 220, 20));
+}
+    
+    
+    
     public void table(){
      int row = p_tbl.getSelectedRow();
      int cc = p_tbl.getSelectedColumn();
@@ -61,18 +83,19 @@ private Connection con;
              try{
             con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
              String sql = "select * from product_tbl where p_id="+tc+"";
+             
              PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             if(rs.next()){
             int id=rs.getInt("p_id");
-                       
+            String name1=rs.getString("p_name");           
             byte[] img = rs.getBytes("img_pc");
             format = new ImageIcon(img);
             Image im =format.getImage().getScaledInstance(pic.getWidth(), pic.getHeight(), Image.SCALE_SMOOTH);
             pic.setIcon(new ImageIcon(im));
             
-            
-                
+                cid.setText(""+id);
+                corder.setText(name1);   
                 
                 
          
@@ -91,6 +114,17 @@ private Connection con;
             ResultSet rs = dbc.getData("SELECT p_id as 'ID', p_name as 'Product', p_small as 'small',p_medium as 'medium', p_large as 'large' FROM product_tbl");
             p_tbl.setModel(DbUtils.resultSetToTableModel(rs));
        
+            while (rs.next()) {
+            String small = rs.getString("Small");
+            String medium = rs.getString("Medium");
+            String large = rs.getString("Large");
+            if (small != null)
+                csize.addItem("Small");
+            if (medium != null)
+                csize.addItem("Medium");
+            if (large != null)
+                csize.addItem("Large");
+        }
         }catch(SQLException ex){
             System.out.println("Error Message: "+ex);
        
@@ -106,12 +140,13 @@ private Connection con;
         cid.setText("");
          corder.setText("");
           cprice.setText("");
-           csize.setText("");
+         csize.getSelectedIndex();
             ctp.setText("");
-             cquant.setText("");
+            
         
         
     }
+    
     
     
      Color navcolor= new Color(217,222,135);
@@ -145,7 +180,6 @@ private Connection con;
         ctp = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         corder = new javax.swing.JTextField();
-        csize = new javax.swing.JTextField();
         cprice = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         Quantity = new javax.swing.JLabel();
@@ -158,6 +192,7 @@ private Connection con;
         searchbar = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         pic = new javax.swing.JLabel();
+        csize = new javax.swing.JComboBox<>();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
 
@@ -295,11 +330,6 @@ private Connection con;
         corder.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.add(corder, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 370, 220, 20));
 
-        csize.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        csize.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        csize.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(csize, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 250, 220, 20));
-
         cprice.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cprice.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         cprice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -385,6 +415,9 @@ private Connection con;
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 110, -1, -1));
 
+        csize.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SMALL", "LARGE", "MEDIUM" }));
+        jPanel1.add(csize, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 250, 220, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -430,10 +463,11 @@ private Connection con;
          cid.setText(null);
          cadd.setText(null);
          corder.setText(null);
-         csize.setText(null);
+                  csize.getSelectedIndex();
+
          cprice.setText(null);
          ctp.setText(null);
-         cquant.setText(null);
+        
             
     }//GEN-LAST:event_clearMouseClicked
 
@@ -458,7 +492,8 @@ private Connection con;
     }//GEN-LAST:event_refreshMouseExited
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        double a = Double.parseDouble(cquant.getText());
+        double a = Double.parseDouble(cquant.getText()); 
+
        int b = Integer.parseInt(cprice.getText());
        double totalp = a * b;
        ctp.setText (""+totalp);
@@ -469,8 +504,9 @@ private Connection con;
          String contact = ccon.getText();
       String address = cadd.getText();
       String order = corder.getText();
-      String size = csize.getText();
-      String quantity = cquant.getText();
+     String size = String.valueOf(csize.getSelectedIndex());
+
+      String quantity =String.valueOf(csize.getSelectedIndex());
       String price = cprice.getText();
       String tp =ctp.getText();
        
@@ -540,7 +576,7 @@ try {
     private javax.swing.JTextField corder;
     private javax.swing.JTextField cprice;
     private javax.swing.JTextField cquant;
-    private javax.swing.JTextField csize;
+    private javax.swing.JComboBox<String> csize;
     private javax.swing.JTextField ctp;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
