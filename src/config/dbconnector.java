@@ -12,7 +12,7 @@ import static javax.management.remote.JMXConnectorFactory.connect;
 
 public class dbconnector {
     
-    private Connection connection;
+    public Connection connection;
     
     public dbconnector(){
         

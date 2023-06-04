@@ -29,8 +29,14 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import net.proteanit.sql.DbUtils;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import static java.lang.String.format;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 
@@ -39,16 +45,10 @@ import javax.swing.*;
  * @author admin
  */
 public class productList extends javax.swing.JInternalFrame {
-
-    
-    public byte[] imageBytes;
-    String path;
-    String action;
-    String filename=null;
-    String imgPath = null;
-   byte[] person_image = null; 
 DefaultTableModel model;
 private Connection con;
+    
+   
     
     public productList() {
         initComponents();
@@ -60,12 +60,117 @@ private Connection con;
         
        
     }
+    
+    
+      public void imageUpdater(String existingFilePath, String newFilePath){
+        File existingFile = new File(existingFilePath);
+        if (existingFile.exists()) {
+            String parentDirectory = existingFile.getParent();
+            File newFile = new File(newFilePath);
+            String newFileName = newFile.getName();
+            File updatedFile = new File(parentDirectory, newFileName);
+            existingFile.delete();
+            try {
+                Files.copy(newFile.toPath(), updatedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("Image updated successfully.");
+            } catch (IOException e) {
+                System.out.println("Error occurred while updating the image: ");
+            }
+        } else {
+            try{
+                Files.copy(selectedFile.toPath(), new File(destination).toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }catch(IOException e){
+                System.out.println("Error on update!");
+            }
+        }
+   }
+      
+       public static int getHeightFromWidth(String imagePath, int desiredWidth) {
+        try {
+            // Read the image file
+            File imageFile = new File(imagePath);
+            BufferedImage image = ImageIO.read(imageFile);
+            
+            // Get the original width and height of the image
+            int originalWidth = image.getWidth();
+            int originalHeight = image.getHeight();
+            
+            // Calculate the new height based on the desired width and the aspect ratio
+            int newHeight = (int) ((double) desiredWidth / originalWidth * originalHeight);
+            
+            return newHeight;
+        } catch (IOException ex) {
+            System.out.println("No image found!");
+        }
+        
+        return -1;
+    }
+       
+     public  ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
+    ImageIcon MyImage = null;
+        if(ImagePath !=null){
+            MyImage = new ImageIcon(ImagePath);
+        }else{
+            MyImage = new ImageIcon(pic);
+        }
+        
+    int newHeight = getHeightFromWidth(ImagePath, label.getWidth());
+
+    Image img = MyImage.getImage();
+    Image newImg = img.getScaledInstance(label.getWidth(), newHeight, Image.SCALE_SMOOTH);
+    ImageIcon image = new ImageIcon(newImg);
+    return image;
+}
+       
+       public int FileChecker(String path){
+        File file = new File(path);
+        String fileName = file.getName();
+        
+        Path filePath = Paths.get("src/image", fileName);
+        boolean fileExists = Files.exists(filePath);
+        
+        if (fileExists) {
+            return 1;
+        } else {
+            return 0;
+        }
+    
+    }
+       public void img(){
+    JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showOpenDialog(null);
+                
+                
+                
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        selectedFile = fileChooser.getSelectedFile();
+                        destination = "src/image/" + selectedFile.getName();
+                        path  = selectedFile.getAbsolutePath();
+                        
+                        
+                        if(FileChecker(path) == 1){
+                          JOptionPane.showMessageDialog(null, "File Already Exist, Rename or Choose another!");
+                            destination = "";
+                            path="";
+                        }else{
+                            image.setIcon(ResizeImage(path, null, image));
+                            System.out.println(""+destination);
+                           browse.setVisible(true);
+                            
+                        }
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "FILE ERROR"+ex);
+                    }
+                }
+    
+}
     public void displayData(){
        
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT p_id as 'Product ID', p_name as 'Product Name', p_small as 'Small', p_medium as 'Medium', p_large as 'Large' FROM product_tbl");
+            ResultSet rs = dbc.getData("SELECT p_id as 'Product ID', p_name as 'Product Name', p_price as 'Price' FROM product_tbl");
            
             pr_table.setModel(DbUtils.resultSetToTableModel(rs));
        
@@ -74,57 +179,28 @@ private Connection con;
        
         }
     }
-    public  ImageIcon ResizeImage(String ImagePath, byte[] pic) {
-    ImageIcon MyImage = null;
-        if(ImagePath !=null){
-            MyImage = new ImageIcon(ImagePath);
-        }else{
-            MyImage = new ImageIcon(pic);
-        }
-    Image img = MyImage.getImage();
-    Image newImg = img.getScaledInstance(picv.getWidth(), picv.getHeight(), Image.SCALE_SMOOTH);
-    ImageIcon image = new ImageIcon(newImg);
-    return image;
-}
-
+   
 
     
     public void reset(){
         
-       
-        pname.setText("");
-        ps.setText("");
-        pm.setText("");
         pid.setText("");
-         pl.setText("");
-         picv.setIcon(null);
+        pname.setText("");
+        pp.setText("");       
+         image.setIcon(null);
         
         
     }
          public boolean validation(){
   String name= pname.getText();
-String psam= ps.getText();
-String pmed= pm.getText();
-String pla= pl.getText();
+String pprice= pp.getText();
 
- if (name.equals("")){
+
+ if (name.equals("") || pprice.equals("")){
  JOptionPane.showMessageDialog(this, "PLEASE ENTER NAME");
  return false;
- }
- if(psam.equals("")){
- JOptionPane.showMessageDialog(this, "PLEASE ENTER THE PRICE OF SMALL PRODUCT");
- return false;
- }
-if(pmed.equals("")){
- JOptionPane.showMessageDialog(this, "PLEASE ENTER THE PRICE OF MEDIUM PRODUCT");
- return false;
- }     
- if(pla.equals("")){
- JOptionPane.showMessageDialog(this, "PLEASE ENTER THE PRICE OF MEDIUM PRODUCT");
- return false;
  }    
-  
-    if(picv.getIcon()==null){
+    if(image.getIcon()==null){
  JOptionPane.showMessageDialog(this, "PLEASE ENTER PHOTO");
  return false;
  }
@@ -132,106 +208,76 @@ if(pmed.equals("")){
  }
     
      public void add(){
-      try{
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
-            String sql = "INSERT INTO product_tbl  ( p_name, p_small, p_medium , p_large, img_pc) VALUES (?,?,?,?,?)"; 
-            PreparedStatement pst = con.prepareStatement(sql);
-            
-            pst.setString(1, pname.getText());
-            pst.setString(2, ps.getText());
-            pst.setString(3, pm.getText());
-            pst.setString(4, pl.getText());
-            pst.setBytes(5, pic);
-            pst.executeUpdate();
-           
-            displayData();
-               reset(); 
+     
+         try{
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery", "root", "");
+            String sql = "INSERT INTO product_tbl ( p_name, p_price, img_pc)values (?,?,?)"; 
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, pname.getText());
+            ps.setString(2, pp.getText());         
+            ps.setString(3, destination);
+            ps.executeUpdate();           
+            Files.copy(selectedFile.toPath(), new File(destination).toPath(), StandardCopyOption.REPLACE_EXISTING);                   
+             displayData();
+             reset();
         JOptionPane.showMessageDialog(this, "ADDED SUCCESSFULLY");
-            }catch(SQLException e){
+        reset();
+            }catch(Exception e){
                 System.err.println("Cannot connect to database: " + e.getMessage());
-            }
+     
      
      }
-    public void update(){
-         try {
-         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
-         int row =pr_table.getSelectedRow();
-         String value = (pr_table.getModel().getValueAt(row, 0).toString());
-         String sql = "UPDATE product_tbl SET p_name=?, p_small=?, p_medium=?, p_large=?, img_pc=? where p_id="+value;
-            PreparedStatement pst = con.prepareStatement(sql);
-           
-            pst.setString(1, pname.getText());
-            pst.setString(2, ps.getText());
-            pst.setString(3, pm.getText());
-            pst.setString(4, pl.getText());
-            pst.setBytes(5, pic);
-            pst.executeUpdate();
-           if(row == 0){
-            JOptionPane.showMessageDialog(null, "Updated Successfully!");
-            displayData();
-           reset();
-        }else{
-           JOptionPane.showMessageDialog(null, "Updated Failed!");
-           
-        }
-         } catch (Exception e) {
-             e.printStackTrace();
-         }
      }
-     public void upload(){
-     JFileChooser chose = new JFileChooser();
-     chose.showOpenDialog(null);
-     File f = chose.getSelectedFile();
-         filename = f.getAbsolutePath();
-         ImageIcon ii = new ImageIcon(filename);
-         Image img = ii.getImage().getScaledInstance(picv.getWidth(), picv.getHeight(), Image.SCALE_SMOOTH);
-     picv.setIcon(new ImageIcon(img));
+    public void update(){
+        int result=0;
          try {
-             File ig = new File(filename);
-             FileInputStream is = new FileInputStream(ig);
-             ByteArrayOutputStream bos =  new ByteArrayOutputStream();
-             byte[] buf = new byte [1024];
-             for (int rnum; (rnum = is.read(buf))!=-1;){
-             bos.write(buf, 0, rnum);
-             }
-             pic =bos.toByteArray();
-         } catch (Exception e) {
-             JOptionPane.showMessageDialog(null, e);
-         }
-          
-    }
+         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery", "root", "");
+         int row = pr_table.getSelectedRow();
+         String value = (pr_table.getModel().getValueAt(row, 0).toString());
+         String sql = "UPDATE product_tbl SET p_name=?, p_price=?,img_pc=? where p_id="+value;
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, pname.getText());
+            ps.setString(2, pp.getText());       
+            ps.setString(3, destination);
+            ps.execute();
+             imageUpdater(oldpath, path);
+           
+           File existingFile = new File(oldpath);
+            if (existingFile.exists()) {
+                existingFile.delete();
+            }
+           reset();
+           JOptionPane.showMessageDialog(null, "Successfully Updated!");
+           }catch(SQLException e){
+             JOptionPane.showMessageDialog(null,"Database Connection Error!"+e);
+           }
+     }
+     
       public void table(){
      int row = pr_table.getSelectedRow();
      int cc = pr_table.getSelectedColumn();
+    ImageIcon format;
      String tc = pr_table.getModel().getValueAt(row, 0).toString();
              try{
-            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
-             String sql = "select * from product_tbl where p_id="+tc+"";
-             PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery", "root", "");
+             String sql = "SELECT * from product_tbl where p_id="+tc+"";
+             PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
             if(rs.next()){
             int id=rs.getInt("p_id");
             String name=rs.getString("p_name");
-            String sm=rs.getString("p_small");
-            String med=rs.getString("p_medium");
-            String lr=rs.getString("p_large");
+            String pprice=rs.getString("p_price");
             
-            byte[] img = rs.getBytes("img_pc");
-            format = new ImageIcon(img);
-            Image im =format.getImage().getScaledInstance(picv.getWidth(), picv.getHeight(), Image.SCALE_SMOOTH);
-            picv.setIcon(new ImageIcon(im));
-            
-            
+            image.setIcon(ResizeImage(rs.getString("img_pc"), null,image));
+                oldpath = rs.getString("img_pc");
                 pid.setText(""+id);
                 pname.setText(name);
-                ps.setText(sm);
-                pl.setText(lr);
-                pm.setText(med);
+                pp.setText(pprice);
                 
                 
          
             }
-             pst.close();
+             ps.close();
              rs.close();
          } catch (Exception e) {
          JOptionPane.showMessageDialog(null, e);
@@ -257,28 +303,24 @@ if(pmed.equals("")){
         pr_table = new javax.swing.JTable();
         delete = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        pm = new javax.swing.JTextField();
         pname = new javax.swing.JTextField();
         clear = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         print = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        ps = new javax.swing.JTextField();
+        pp = new javax.swing.JTextField();
         refresh = new javax.swing.JPanel();
         REFRESH = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         pid = new javax.swing.JTextField();
-        pl = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         add = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        picv = new javax.swing.JLabel();
-        btnImage = new javax.swing.JButton();
+        image = new javax.swing.JLabel();
+        browse = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
 
@@ -345,32 +387,18 @@ if(pmed.equals("")){
 
         jPanel1.add(delete, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 360, 80, 30));
 
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel2.setText("MEDIUM:");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 210, 90, 30));
-
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel6.setText("ID:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 40, 30));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 40, 30));
 
         jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel8.setText("SMALL:");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 70, 30));
-
-        pm.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        pm.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        pm.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pm.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                pmKeyPressed(evt);
-            }
-        });
-        jPanel1.add(pm, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 210, 220, 30));
+        jLabel8.setText("PRICE:");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 70, 30));
 
         pname.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pname.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pname.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(pname, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 130, 220, 30));
+        jPanel1.add(pname, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 180, 220, 30));
 
         clear.setBackground(new java.awt.Color(222, 140, 135));
         clear.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -415,20 +443,20 @@ if(pmed.equals("")){
 
         jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 360, 80, 30));
 
-        ps.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        ps.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        ps.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        ps.addActionListener(new java.awt.event.ActionListener() {
+        pp.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        pp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        pp.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                psActionPerformed(evt);
+                ppActionPerformed(evt);
             }
         });
-        ps.addKeyListener(new java.awt.event.KeyAdapter() {
+        pp.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                psKeyPressed(evt);
+                ppKeyPressed(evt);
             }
         });
-        jPanel1.add(ps, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 220, 30));
+        jPanel1.add(pp, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 220, 220, 30));
 
         refresh.setBackground(new java.awt.Color(222, 140, 135));
         refresh.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -454,31 +482,12 @@ if(pmed.equals("")){
 
         jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel13.setText("Name: ");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 70, 30));
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 70, 30));
 
         pid.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pid.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(pid, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, 220, 30));
-
-        pl.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        pl.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        pl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pl.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                plActionPerformed(evt);
-            }
-        });
-        pl.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                plKeyPressed(evt);
-            }
-        });
-        jPanel1.add(pl, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 260, 220, 30));
-
-        jLabel12.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel12.setText("LARGE:");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 80, 30));
+        jPanel1.add(pid, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 140, 220, 30));
         jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 700, 10));
 
         add.setBackground(new java.awt.Color(222, 140, 135));
@@ -503,28 +512,28 @@ if(pmed.equals("")){
 
         jPanel1.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 80, 30));
 
-        picv.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(picv, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+            .addComponent(image, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(picv, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+            .addComponent(image, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
         );
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 70, 150, 130));
 
-        btnImage.setText("BROWSE");
-        btnImage.addActionListener(new java.awt.event.ActionListener() {
+        browse.setText("BROWSE");
+        browse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImageActionPerformed(evt);
+                browseActionPerformed(evt);
             }
         });
-        jPanel1.add(btnImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, -1, -1));
+        jPanel1.add(browse, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -550,12 +559,10 @@ if(pmed.equals("")){
 
     private void clearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearMouseClicked
         
-         pname.setText(null);
-         pm.setText(null);        
+         pname.setText(null);        
          pid.setText(null);
-         ps.setText(null);
-         pl.setText(null);
-         picv.setIcon(null);
+         pp.setText(null);       
+         image.setIcon(null);
             
     }//GEN-LAST:event_clearMouseClicked
 
@@ -656,60 +663,35 @@ if(pmed.equals("")){
         add.setBackground(headcolor);
     }//GEN-LAST:event_addMouseExited
 
-    private void btnImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageActionPerformed
-      upload();
-    }//GEN-LAST:event_btnImageActionPerformed
+    private void browseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseActionPerformed
+     img();    
+    }//GEN-LAST:event_browseActionPerformed
 
-    private void psActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_psActionPerformed
+    private void ppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppActionPerformed
         
-    }//GEN-LAST:event_psActionPerformed
+    }//GEN-LAST:event_ppActionPerformed
 
-    private void psKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_psKeyPressed
+    private void ppKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ppKeyPressed
          char c = evt.getKeyChar();
         if(Character.isLetter(c)){
-        ps.setEditable(false);
+        pp.setEditable(false);
         JOptionPane.showMessageDialog(this, "Please enter number only");
         }else{
-        ps.setEditable(true);
+        pp.setEditable(true);
         }
-    }//GEN-LAST:event_psKeyPressed
-
-    private void pmKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pmKeyPressed
-        char c = evt.getKeyChar();
-        if(Character.isLetter(c)){
-        pm.setEditable(false);
-        JOptionPane.showMessageDialog(this, "Please enter number only");
-        }else{
-        pm.setEditable(true);
-        }
-    }//GEN-LAST:event_pmKeyPressed
-
-    private void plActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_plActionPerformed
-
-    private void plKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_plKeyPressed
-        char c = evt.getKeyChar();
-        if(Character.isLetter(c)){
-        pl.setEditable(false);
-        JOptionPane.showMessageDialog(this, "Please enter number only");
-        }else{
-        pl.setEditable(true);
-        }
-    }//GEN-LAST:event_plKeyPressed
+    }//GEN-LAST:event_ppKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel REFRESH;
     private javax.swing.JPanel add;
-    private javax.swing.JButton btnImage;
+    private javax.swing.JButton browse;
     private javax.swing.JPanel clear;
     private javax.swing.JPanel delete;
+    private javax.swing.JLabel image;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -720,21 +702,18 @@ if(pmed.equals("")){
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JLabel picv;
     private javax.swing.JTextField pid;
-    private javax.swing.JTextField pl;
-    private javax.swing.JTextField pm;
     private javax.swing.JTextField pname;
+    private javax.swing.JTextField pp;
     private javax.swing.JTable pr_table;
     private javax.swing.JPanel print;
-    private javax.swing.JTextField ps;
     private javax.swing.JPanel refresh;
     private javax.swing.JPanel update;
     // End of variables declaration//GEN-END:variables
 
- String filen= null;
-byte[] pic = null; 
-private ImageIcon format = null;
-
+  public String destination = "";
+    File selectedFile;
+    public String oldpath;
+    String path;
    
 }

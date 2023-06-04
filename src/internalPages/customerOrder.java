@@ -7,10 +7,12 @@ package internalPages;
 
 import config.dbconnector;
 import config.login_db;
+import static internalPages.productList.getHeightFromWidth;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,6 +32,7 @@ import myapp.loginForm;
 import net.proteanit.sql.DbUtils;
 import static java.lang.String.format;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 
 
@@ -41,12 +44,12 @@ import javax.swing.JComboBox;
 
 public class customerOrder extends javax.swing.JInternalFrame {
 
-     public byte[] imageBytes;
+     public String destination = "";
+    File selectedFile;
+    public String oldpath;
     String path;
-    String action;
-    String filename=null;
-    String imgPath = null;
-   byte[] person_image = null; 
+   
+   
 DefaultTableModel model;
 private Connection con;
     public customerOrder() {
@@ -57,50 +60,50 @@ private Connection con;
         BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
         bi.setNorthPane(null);
         
-       csize = new JComboBox<>();
-    csize.addItem("Small");
-    csize.addItem("Medium");
-    csize.addItem("Large"); 
-        csize.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            generatePrice();
+     
+    }
+    public  ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
+    ImageIcon MyImage = null;
+        if(ImagePath !=null){
+            MyImage = new ImageIcon(ImagePath);
+        }else{
+            MyImage = new ImageIcon(pic);
         }
-
-            private void generatePrice() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
         
-        jPanel1.add(csize, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 250, 220, 20));
+    int newHeight = getHeightFromWidth(ImagePath, label.getWidth());
+
+    Image img = MyImage.getImage();
+    Image newImg = img.getScaledInstance(label.getWidth(), newHeight, Image.SCALE_SMOOTH);
+    ImageIcon image = new ImageIcon(newImg);
+    return image;
 }
     
     
-    
     public void table(){
-     int row = p_tbl.getSelectedRow();
+    int row = p_tbl.getSelectedRow();
      int cc = p_tbl.getSelectedColumn();
+    ImageIcon format;
      String tc = p_tbl.getModel().getValueAt(row, 0).toString();
              try{
-            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
-             String sql = "select * from product_tbl where p_id="+tc+"";
-             
-             PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery", "root", "");
+             String sql = "SELECT * from product_tbl where p_id="+tc+"";
+             PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
             if(rs.next()){
             int id=rs.getInt("p_id");
-            String name1=rs.getString("p_name");           
-            byte[] img = rs.getBytes("img_pc");
-            format = new ImageIcon(img);
-            Image im =format.getImage().getScaledInstance(pic.getWidth(), pic.getHeight(), Image.SCALE_SMOOTH);
-            pic.setIcon(new ImageIcon(im));
+            String name=rs.getString("p_name");
+            String pprice=rs.getString("p_price");
             
+            image.setIcon(ResizeImage(rs.getString("img_pc"), null,image));
+                oldpath = rs.getString("img_pc");
                 cid.setText(""+id);
-                corder.setText(name1);   
+                corder.setText(name);
+                cprice.setText(pprice);
                 
                 
          
             }
-             pst.close();
+             ps.close();
              rs.close();
          } catch (Exception e) {
          JOptionPane.showMessageDialog(null, e);
@@ -111,20 +114,10 @@ private Connection con;
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT p_id as 'ID', p_name as 'Product', p_small as 'small',p_medium as 'medium', p_large as 'large' FROM product_tbl");
+            ResultSet rs = dbc.getData("SELECT p_id as 'ID', p_name as 'Product', p_price as 'Price' FROM product_tbl");
             p_tbl.setModel(DbUtils.resultSetToTableModel(rs));
        
-            while (rs.next()) {
-            String small = rs.getString("Small");
-            String medium = rs.getString("Medium");
-            String large = rs.getString("Large");
-            if (small != null)
-                csize.addItem("Small");
-            if (medium != null)
-                csize.addItem("Medium");
-            if (large != null)
-                csize.addItem("Large");
-        }
+           
         }catch(SQLException ex){
             System.out.println("Error Message: "+ex);
        
@@ -138,10 +131,9 @@ private Connection con;
         cadd.setText("");
         ccon.setText("");
         cid.setText("");
-         corder.setText("");
-          cprice.setText("");
-         csize.getSelectedIndex();
-            ctp.setText("");
+        corder.setText("");
+        cprice.setText("");        
+        ctp.setText("");
             
         
         
@@ -182,7 +174,6 @@ private Connection con;
         corder = new javax.swing.JTextField();
         cprice = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
-        Quantity = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         cquant = new javax.swing.JTextField();
@@ -191,8 +182,7 @@ private Connection con;
         jLabel14 = new javax.swing.JLabel();
         searchbar = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        pic = new javax.swing.JLabel();
-        csize = new javax.swing.JComboBox<>();
+        image = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
 
@@ -319,11 +309,11 @@ private Connection con;
         ctp.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         ctp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         ctp.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(ctp, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 370, 220, 20));
+        jPanel1.add(ctp, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 350, 220, 20));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel9.setText("Total Price:");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 372, 100, 20));
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 350, 100, 20));
 
         corder.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         corder.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -333,19 +323,15 @@ private Connection con;
         cprice.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cprice.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         cprice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(cprice, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 310, 220, 20));
+        jPanel1.add(cprice, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 290, 220, 20));
 
         jLabel12.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel12.setText("Order:");
         jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, 60, 20));
 
-        Quantity.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        Quantity.setText("Size:");
-        jPanel1.add(Quantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 250, 80, 20));
-
         jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel15.setText("Price:");
-        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 310, 60, 20));
+        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 290, 60, 20));
 
         jButton1.setBackground(new java.awt.Color(222, 140, 135));
         jButton1.setText("CALCULATE");
@@ -354,16 +340,16 @@ private Connection con;
                 jButton1MouseClicked(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 340, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 320, -1, -1));
 
         cquant.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cquant.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         cquant.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(cquant, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 280, 220, 20));
+        jPanel1.add(cquant, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 260, 220, 20));
 
         Quantity1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         Quantity1.setText("Quantity:");
-        jPanel1.add(Quantity1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 280, 80, 20));
+        jPanel1.add(Quantity1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 260, 80, 20));
 
         add.setBackground(new java.awt.Color(222, 140, 135));
         add.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -396,27 +382,24 @@ private Connection con;
         });
         jPanel1.add(searchbar, new org.netbeans.lib.awtextra.AbsoluteConstraints(259, 40, 340, 30));
 
-        pic.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(pic, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(pic, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 110, -1, -1));
-
-        csize.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SMALL", "LARGE", "MEDIUM" }));
-        jPanel1.add(csize, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 250, 220, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -463,8 +446,7 @@ private Connection con;
          cid.setText(null);
          cadd.setText(null);
          corder.setText(null);
-                  csize.getSelectedIndex();
-
+         cquant.setText(null);       
          cprice.setText(null);
          ctp.setText(null);
         
@@ -504,15 +486,13 @@ private Connection con;
          String contact = ccon.getText();
       String address = cadd.getText();
       String order = corder.getText();
-     String size = String.valueOf(csize.getSelectedIndex());
-
-      String quantity =String.valueOf(csize.getSelectedIndex());
+    String quantity = cquant.getText();   
       String price = cprice.getText();
       String tp =ctp.getText();
        
         
        
-        if (name.equals("")||contact.equals("")||address.equals("")||order.equals("")||size.equals("")||quantity.equals("")||price.equals("")||tp.equals(""))
+        if (name.equals("")||contact.equals("")||address.equals("")||order.equals("")||quantity.equals("")||price.equals("")||tp.equals(""))
         {
             JOptionPane.showMessageDialog(null, "All Fields Are Required!");
         }
@@ -527,11 +507,10 @@ try {
     ps.setString(2, address);
     ps.setString(3, contact);
     ps.setString(4, order);
-    ps.setString(5, size);
-    ps.setString(6, quantity);
-    ps.setString(7, price);
-    ps.setString(8,tp );
-    ps.setString(9,"PENDING" );
+    ps.setString(5, quantity);
+    ps.setString(6, price);
+    ps.setString(7,tp );
+    ps.setString(8,"PENDING" );
    
  
     if(ps.executeUpdate() > 0){
@@ -564,7 +543,6 @@ try {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel Quantity;
     private javax.swing.JLabel Quantity1;
     private javax.swing.JLabel REFRESH;
     private javax.swing.JPanel add;
@@ -576,8 +554,8 @@ try {
     private javax.swing.JTextField corder;
     private javax.swing.JTextField cprice;
     private javax.swing.JTextField cquant;
-    private javax.swing.JComboBox<String> csize;
     private javax.swing.JTextField ctp;
+    private javax.swing.JLabel image;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -594,13 +572,11 @@ try {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable p_tbl;
-    private javax.swing.JLabel pic;
     private javax.swing.JPanel refresh;
     private javax.swing.JPanel search;
     private javax.swing.JTextField searchbar;
     // End of variables declaration//GEN-END:variables
 String filen= null;
-
 private ImageIcon format = null;
 
 }
