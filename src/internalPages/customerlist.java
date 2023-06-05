@@ -77,7 +77,7 @@ private Connection con;
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT c_id as 'Customer ID', c_name as 'Customer',c_add as 'Address',c_con as 'contact' FROM customer_tbl");
+            ResultSet rs = dbc.getData("SELECT c_id as 'Customer ID', c_name as 'Customer',c_add as 'Address',c_con as 'Contact' FROM customer_tbl");
            
             c_tbl.setModel(DbUtils.resultSetToTableModel(rs));
        
@@ -219,7 +219,7 @@ String contact= ccon.getText();
         });
         jScrollPane1.setViewportView(c_tbl);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 100, 390, 180));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 70, 390, 210));
 
         delete.setBackground(new java.awt.Color(222, 140, 135));
         delete.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -241,7 +241,7 @@ String contact= ccon.getText();
         jLabel7.setText("DELETE");
         delete.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(delete, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 360, 80, 30));
+        jPanel1.add(delete, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 360, 80, 30));
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel6.setText("ID:");
@@ -297,7 +297,7 @@ String contact= ccon.getText();
         jLabel3.setText("PRINT");
         print.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 360, 80, 30));
+        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 360, 80, 30));
 
         cadd.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cadd.setHorizontalAlignment(javax.swing.JTextField.CENTER);

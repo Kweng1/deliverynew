@@ -76,24 +76,28 @@ public class customerOrder extends javax.swing.JInternalFrame {
  
  }
     public void gslip() {
-
-        rec.setText("*****************************************************\n");
-        rec.setText(rec.getText() + "-------------------ORDER RECIEPT--------------------\n");
-        rec.setText(rec.getText() + "*****************************************************\n");
+        
+        rec.setText("****************************************************\n");
+        rec.setText(rec.getText() + "----------PIZZA DELIVERY APP------------------\n");
+        rec.setText(rec.getText() + "------------ORDER RECIEPT----------------------\n");
+        rec.setText(rec.getText() + "****************************************************\n");
 
         Date date = new Date();  // or replace with your own date object
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Replace with your desired format
         String formattedDate = dateFormat.format(date);
 
-        rec.setText(rec.getText() + "\nDATE: " + formattedDate + "\n");
-        rec.setText(rec.getText() + "\nPRODUCT ID: " + pid.getText() + "\n");
-        rec.setText(rec.getText() + "\nCUSTOMER ID: " + jComboBox1.getSelectedItem() + "\n");
-        rec.setText(rec.getText() + "\nQUANTITY: " + cquant.getText() + "\n");
-        rec.setText(rec.getText() + "\nRPICE: " + cprice.getText() + "\n");
-        rec.setText(rec.getText() + "*****************************************************\n");
-        rec.setText(rec.getText() + "\nTOTAL PRICE: " + ctp.getText() + "\n");
-
+        rec.setText(rec.getText() + "DATE: " + formattedDate + "\n");
+        rec.setText(rec.getText() + "PRODUCT ID: " + pid.getText() + "\n");
+        rec.setText(rec.getText() + "CUSTOMER ID: " + jComboBox1.getSelectedItem() + "\n");
+        rec.setText(rec.getText() + "CUSTOMER NAME: " + customerNameTextField.getText() + "\n");
+        rec.setText(rec.getText() + "QUANTITY: " + cquant.getText() + "\n");
+        rec.setText(rec.getText() + "PRICE: " + cprice.getText() + "\n");
+        rec.setText(rec.getText() + "******************************************************\n");
+        rec.setText(rec.getText() + "TOTAL PRICE: " + ctp.getText() + "\n");
+  
+            
+        rec.setText(rec.getText()+"\nThis Serve as an Official Receipt!!!\n\n");
     }
 
     public void initialize() {
@@ -113,42 +117,45 @@ public class customerOrder extends javax.swing.JInternalFrame {
 //        } catch (SQLException ex) {
 //        }
         try {
-            String name = " ";
-            dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT * FROM customer_tbl");
+    String name = " ";
+    dbconnector dbc = new dbconnector();
+    ResultSet rs = dbc.getData("SELECT * FROM customer_tbl");
 
-            while (rs.next()) {
-                name = rs.getString("c_id");
-                jComboBox1.addItem(name);
-            }
-            
-            jComboBox1.addActionListener(new ActionListener(){
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    String selectedId = (String) jComboBox1.getSelectedItem();
-                  String customerName = lookupCustomerName(selectedId);
-                    
-                    customerNameTextField.setText(customerName);
-                    //To change body of generated methods, choose Tools | Templates.
-                }
+    while (rs.next()) {
+        name = rs.getString("c_id");
+        jComboBox1.addItem(name);
+    }
 
-                private String lookupCustomerName(String selectedId) {
-                    return null;
-                    //To change body of generated methods, choose Tools | Templates.
-                }
-                
-            });
+    jComboBox1.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            String selectedId = (String) jComboBox1.getSelectedItem();
+            String customerName = lookupCustomerName(selectedId);
 
-        } catch (SQLException ex) {
-            System.out.println("Error Message: " + ex);
-
+            customerNameTextField.setText(customerName);
         }
-    }
-    
-    private String lookupCustomer(String customerId){
-        return " ";
-    }
 
+        private String lookupCustomerName(String selectedId) {
+            // Implement the database lookup logic here
+            String customerName = null;
+            try {
+                dbconnector dbc = new dbconnector();
+                ResultSet rs = dbc.getData("SELECT c_name FROM customer_tbl WHERE c_id = '" + selectedId + "'");
+                if (rs.next()) {
+                    customerName = rs.getString("c_name");
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error Message: " + ex);
+            }
+            return customerName;
+        }
+
+    });
+
+} catch (SQLException ex) {
+    System.out.println("Error Message: " + ex);
+}
+    }
     //print
     
 
@@ -215,6 +222,8 @@ public class customerOrder extends javax.swing.JInternalFrame {
         pid.setText("");
         cprice.setText("");
         ctp.setText("");
+        customerNameTextField.setText("");
+        cquant.setText("");
 
     }
 
@@ -256,6 +265,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
         print = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         customerNameTextField = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
 
@@ -348,13 +358,13 @@ public class customerOrder extends javax.swing.JInternalFrame {
         jPanel1.add(refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 360, 80, 30));
 
         jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel13.setText("Customer ID: ");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 90, 20));
+        jLabel13.setText("Customer Name: ");
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 110, 20));
 
         pid.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pid.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(pid, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 230, 220, 20));
+        jPanel1.add(pid, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 230, 220, 20));
 
         ctp.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         ctp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -386,7 +396,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
         cquant.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cquant.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         cquant.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(cquant, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 330, 220, 20));
+        jPanel1.add(cquant, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 330, 220, 20));
 
         Quantity1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         Quantity1.setText("Quantity:");
@@ -421,7 +431,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
                 searchbarMouseEntered(evt);
             }
         });
-        jPanel1.add(searchbar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 340, 30));
+        jPanel1.add(searchbar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 340, 20));
 
         image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -429,7 +439,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(image, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+            .addComponent(image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -444,18 +454,29 @@ public class customerOrder extends javax.swing.JInternalFrame {
         rec.setRows(5);
         jScrollPane2.setViewportView(rec);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 20, 210, 270));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 20, 230, 270));
 
+        print.setBackground(new java.awt.Color(222, 140, 135));
         print.setText("PRINT");
         print.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 printActionPerformed(evt);
             }
         });
-        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 250, 80, -1));
+        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 360, 90, 30));
 
-        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 270, 220, 20));
-        jPanel1.add(customerNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 220, -1));
+        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 260, 220, 20));
+
+        customerNameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customerNameTextFieldActionPerformed(evt);
+            }
+        });
+        jPanel1.add(customerNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 290, 220, -1));
+
+        jLabel17.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel17.setText("Customer ID: ");
+        jPanel1.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, 90, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -501,6 +522,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
         cquant.setText(null);
         cprice.setText(null);
         ctp.setText(null);
+        customerNameTextField.setText(null);
 
 
     }//GEN-LAST:event_clearMouseClicked
@@ -585,6 +607,10 @@ public class customerOrder extends javax.swing.JInternalFrame {
        print();
     }//GEN-LAST:event_printActionPerformed
 
+    private void customerNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerNameTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_customerNameTextFieldActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Quantity1;
@@ -603,6 +629,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel9;

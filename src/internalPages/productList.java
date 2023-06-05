@@ -352,7 +352,7 @@ String pprice= pp.getText();
         jLabel4.setText("UPDATE");
         update.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(update, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 310, 80, 30));
+        jPanel1.add(update, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 310, 80, 30));
 
         pr_table.setBackground(new java.awt.Color(255, 230, 204));
         pr_table.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -363,7 +363,7 @@ String pprice= pp.getText();
         });
         jScrollPane1.setViewportView(pr_table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 210, 360, 180));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 70, 360, 220));
 
         delete.setBackground(new java.awt.Color(222, 140, 135));
         delete.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -385,20 +385,25 @@ String pprice= pp.getText();
         jLabel7.setText("DELETE");
         delete.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(delete, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 360, 80, 30));
+        jPanel1.add(delete, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 310, 80, 30));
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel6.setText("ID:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 40, 30));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 40, 30));
 
         jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel8.setText("PRICE:");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 70, 30));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 70, 30));
 
         pname.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pname.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pname.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(pname, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 180, 220, 30));
+        pname.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pnameActionPerformed(evt);
+            }
+        });
+        jPanel1.add(pname, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 300, 220, 30));
 
         clear.setBackground(new java.awt.Color(222, 140, 135));
         clear.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -420,7 +425,7 @@ String pprice= pp.getText();
         jLabel10.setText("CLEAR");
         clear.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 310, 80, 30));
+        jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 360, 80, 30));
 
         print.setBackground(new java.awt.Color(222, 140, 135));
         print.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -441,7 +446,7 @@ String pprice= pp.getText();
         jLabel3.setText("PRINT");
         print.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 360, 80, 30));
+        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 360, 80, 30));
 
         pp.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -456,7 +461,7 @@ String pprice= pp.getText();
                 ppKeyPressed(evt);
             }
         });
-        jPanel1.add(pp, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 220, 220, 30));
+        jPanel1.add(pp, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 340, 220, 30));
 
         refresh.setBackground(new java.awt.Color(222, 140, 135));
         refresh.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -478,16 +483,16 @@ String pprice= pp.getText();
         REFRESH.setText("REFRESH");
         refresh.add(REFRESH, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 360, 80, 30));
+        jPanel1.add(refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 360, 80, 30));
 
         jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel13.setText("Name: ");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 70, 30));
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, 70, 30));
 
         pid.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pid.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(pid, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 140, 220, 30));
+        jPanel1.add(pid, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 260, 220, 30));
         jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 700, 10));
 
         add.setBackground(new java.awt.Color(222, 140, 135));
@@ -510,7 +515,7 @@ String pprice= pp.getText();
         jLabel5.setText("ADD");
         add.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -1, 80, 30));
 
-        jPanel1.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 80, 30));
+        jPanel1.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 310, 80, 30));
 
         image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -518,22 +523,23 @@ String pprice= pp.getText();
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(image, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+            .addComponent(image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(image, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
         );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 70, 150, 130));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 80, 150, 130));
 
+        browse.setBackground(new java.awt.Color(222, 140, 135));
         browse.setText("BROWSE");
         browse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 browseActionPerformed(evt);
             }
         });
-        jPanel1.add(browse, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, -1, -1));
+        jPanel1.add(browse, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 220, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -680,6 +686,10 @@ String pprice= pp.getText();
         pp.setEditable(true);
         }
     }//GEN-LAST:event_ppKeyPressed
+
+    private void pnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pnameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pnameActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

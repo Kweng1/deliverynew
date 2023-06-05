@@ -11,11 +11,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
+import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollBar;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
@@ -42,23 +45,21 @@ DefaultTableModel model;
         bi.setNorthPane(null);
     }
     
-    public void displayData(){
-       
-        try{
-       
-            dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT customer_order.o_id, customer_tbl.c_id,customer_tbl.c_name,customer_tbl.c_add, customer_tbl.c_con, product_tbl.p_id, product_tbl.p_name,customer_order.cu_quant,customer_order.cu_price,customer_order.cu_tp,customer_order.cu_status\n" +
-"FROM ((customer_order\n" +
-"INNER JOIN customer_tbl ON customer_order.c_id = customer_tbl.c_id)\n" +
-"INNER JOIN product_tbl ON customer_order.p_id = product_tbl.p_id);");
-           
-            o_table.setModel(DbUtils.resultSetToTableModel(rs));
-       
-        }catch(SQLException ex){
-            System.out.println("Error Message: "+ex);
-       
-        }
+public void displayData() {
+    try {
+        dbconnector dbc = new dbconnector();
+        ResultSet rs = dbc.getData("SELECT customer_order.o_id as 'Order ID', customer_tbl.c_id as 'Customer Id', customer_tbl.c_name as 'Customer Name', customer_tbl.c_add as 'Customer Address', customer_tbl.c_con as 'Customer Contact', product_tbl.p_id as 'Product ID', product_tbl.p_name as 'Product Name', customer_order.cu_quant as 'Quantity', customer_order.cu_price as 'Price', customer_order.cu_tp as 'Total Price', customer_order.cu_status as 'Status' FROM ((customer_order INNER JOIN customer_tbl ON customer_order.c_id = customer_tbl.c_id) INNER JOIN product_tbl ON customer_order.p_id = product_tbl.p_id) ORDER BY customer_order.o_id ASC");
+
+        o_table.setModel(DbUtils.resultSetToTableModel(rs));
+
+    } catch (SQLException ex) {
+        System.out.println("Error Message: " + ex);
     }
+}
+
+
+
+
      
      public void update(){
          try {

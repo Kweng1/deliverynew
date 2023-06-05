@@ -36,15 +36,13 @@ public class dashBoard extends javax.swing.JFrame {
         dashpane1 = new javax.swing.JPanel();
         dashboard = new javax.swing.JLabel();
         customer_report = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         deliveryrinfo = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         userni = new javax.swing.JLabel();
-        dashpane = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
         ACC = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         customerlist = new javax.swing.JPanel();
@@ -109,17 +107,10 @@ public class dashBoard extends javax.swing.JFrame {
         });
         customer_report.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel3.setBackground(new java.awt.Color(0, 204, 204));
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-graph-report-48 (1).png"))); // NOI18N
-        jLabel3.setText("CUSTOMER REPORT");
-        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel3MouseClicked(evt);
-            }
-        });
-        customer_report.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, -1));
+        jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-report-48 (1).png"))); // NOI18N
+        jLabel9.setText("CUSTOMER REPORT");
+        customer_report.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 40));
 
         navbar.add(customer_report, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 180, 40));
 
@@ -161,35 +152,6 @@ public class dashBoard extends javax.swing.JFrame {
         userni.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         userni.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         navbar.add(userni, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 180, 30));
-
-        dashpane.setBackground(new java.awt.Color(217, 222, 135));
-        dashpane.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                dashpaneMouseClicked(evt);
-            }
-        });
-
-        jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-dashboard-layout-48 (1).png"))); // NOI18N
-        jLabel9.setText("     DASHBOARD");
-
-        javax.swing.GroupLayout dashpaneLayout = new javax.swing.GroupLayout(dashpane);
-        dashpane.setLayout(dashpaneLayout);
-        dashpaneLayout.setHorizontalGroup(
-            dashpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dashpaneLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        dashpaneLayout.setVerticalGroup(
-            dashpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dashpaneLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        navbar.add(dashpane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 180, 40));
 
         ACC.setBackground(new java.awt.Color(217, 222, 135));
         ACC.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -236,23 +198,23 @@ public class dashBoard extends javax.swing.JFrame {
         });
 
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-customer-40.png"))); // NOI18N
         jLabel11.setText("CUSTOMER LIST");
 
         javax.swing.GroupLayout customerlistLayout = new javax.swing.GroupLayout(customerlist);
         customerlist.setLayout(customerlistLayout);
         customerlistLayout.setHorizontalGroup(
             customerlistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(customerlistLayout.createSequentialGroup()
-                .addGap(41, 41, 41)
-                .addComponent(jLabel11)
-                .addContainerGap(28, Short.MAX_VALUE))
+            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
         );
         customerlistLayout.setVerticalGroup(
             customerlistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerlistLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        navbar.add(customerlist, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, -1, -1));
+        navbar.add(customerlist, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, -1, -1));
 
         jPanel1.add(navbar);
         navbar.setBounds(0, 0, 180, 470);
@@ -293,13 +255,13 @@ public class dashBoard extends javax.swing.JFrame {
 
         jLabel5.setFont(new java.awt.Font("Engravers MT", 1, 48)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("DELIVery");
+        jLabel5.setText("pizza");
         maindesktop.add(jLabel5);
         jLabel5.setBounds(0, 120, 720, 50);
 
         jLabel7.setFont(new java.awt.Font("Engravers MT", 1, 36)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("TRACKER");
+        jLabel7.setText("delivery");
         maindesktop.add(jLabel7);
         jLabel7.setBounds(-10, 180, 740, 50);
 
@@ -370,11 +332,6 @@ public class dashBoard extends javax.swing.JFrame {
      maindesktop.add(oi).setVisible(true);
     }//GEN-LAST:event_deliveryrinfoMouseClicked
 
-    private void dashpaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dashpaneMouseClicked
-        
-    
-    }//GEN-LAST:event_dashpaneMouseClicked
-
     private void ACCMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ACCMouseClicked
       account ac = new   account();
      maindesktop.add(ac).setVisible(true);
@@ -400,10 +357,6 @@ public class dashBoard extends javax.swing.JFrame {
     private void customerlistMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerlistMouseExited
          customerlist.setBackground(navcolor);
     }//GEN-LAST:event_customerlistMouseExited
-
-    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-       
-    }//GEN-LAST:event_jLabel3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -446,7 +399,6 @@ public class dashBoard extends javax.swing.JFrame {
     private javax.swing.JPanel customer_report;
     private javax.swing.JPanel customerlist;
     private javax.swing.JLabel dashboard;
-    private javax.swing.JPanel dashpane;
     private javax.swing.JPanel dashpane1;
     private javax.swing.JPanel deliveryrinfo;
     private javax.swing.JPanel header;
@@ -454,7 +406,6 @@ public class dashBoard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

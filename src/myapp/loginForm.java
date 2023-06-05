@@ -71,6 +71,7 @@ public class loginForm extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         minimize = new javax.swing.JLabel();
         close = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -81,7 +82,6 @@ public class loginForm extends javax.swing.JFrame {
         forgotpass = new javax.swing.JLabel();
         password = new javax.swing.JPasswordField();
         username = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
@@ -114,6 +114,21 @@ public class loginForm extends javax.swing.JFrame {
             }
         });
         jPanel3.add(close, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 0, 30, 30));
+
+        jPanel2.setBackground(new java.awt.Color(222, 140, 135));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 930, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 30, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-440, 0, 930, 30));
 
         jPanel4.setBackground(new java.awt.Color(0, 0, 0, 80));
         jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -220,33 +235,18 @@ public class loginForm extends javax.swing.JFrame {
         });
         jPanel4.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 320, 40));
 
-        jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 60, 390, 370));
-
-        jPanel2.setBackground(new java.awt.Color(222, 140, 135));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 930, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
-        );
-
-        jPanel3.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-440, 0, 930, 30));
+        jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 60, -1, 370));
 
         jLabel3.setBackground(new java.awt.Color(222, 140, 135));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/401711.jpg"))); // NOI18N
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-450, 0, 940, 470));
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/1pp.jpg"))); // NOI18N
+        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, -210, 940, 680));
 
         jPanel1.add(jPanel3);
         jPanel3.setBounds(440, 0, 490, 470);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/336646233_233690649040631_4196703286668098395_n-removebg-preview.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/1logo-removebg-preview.png"))); // NOI18N
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(60, 120, 310, 227);
+        jLabel2.setBounds(80, 120, 260, 227);
 
         jPanel5.setBackground(new java.awt.Color(222, 140, 135));
 
