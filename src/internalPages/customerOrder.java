@@ -31,121 +31,197 @@ import javax.swing.table.TableRowSorter;
 import myapp.loginForm;
 import net.proteanit.sql.DbUtils;
 import static java.lang.String.format;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-
-
-
 /**
  *
  * @author admin
  */
-
-
 public class customerOrder extends javax.swing.JInternalFrame {
 
-     public String destination = "";
+    public String destination = "";
     File selectedFile;
     public String oldpath;
     String path;
-   
-   
-DefaultTableModel model;
-private Connection con;
+
+    DefaultTableModel model;
+    private Connection con;
+
     public customerOrder() {
         initComponents();
         displayData();
-        
-        this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
-        BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
+        initialize();
+        gslip();
+        this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        BasicInternalFrameUI bi = (BasicInternalFrameUI) this.getUI();
         bi.setNorthPane(null);
-        
-     
+
     }
-    public  ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
-    ImageIcon MyImage = null;
-        if(ImagePath !=null){
+    public void print(){
+ 
+     try {
+         rec.print();
+     } catch (Exception e) {
+     JOptionPane.showMessageDialog(null, "print failed"+e);
+     }
+ 
+ 
+ 
+ 
+ }
+    public void gslip() {
+
+        rec.setText("*****************************************************\n");
+        rec.setText(rec.getText() + "-------------------ORDER RECIEPT--------------------\n");
+        rec.setText(rec.getText() + "*****************************************************\n");
+
+        Date date = new Date();  // or replace with your own date object
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Replace with your desired format
+        String formattedDate = dateFormat.format(date);
+
+        rec.setText(rec.getText() + "\nDATE: " + formattedDate + "\n");
+        rec.setText(rec.getText() + "\nPRODUCT ID: " + pid.getText() + "\n");
+        rec.setText(rec.getText() + "\nCUSTOMER ID: " + jComboBox1.getSelectedItem() + "\n");
+        rec.setText(rec.getText() + "\nQUANTITY: " + cquant.getText() + "\n");
+        rec.setText(rec.getText() + "\nRPICE: " + cprice.getText() + "\n");
+        rec.setText(rec.getText() + "*****************************************************\n");
+        rec.setText(rec.getText() + "\nTOTAL PRICE: " + ctp.getText() + "\n");
+
+    }
+
+    public void initialize() {
+//        String name = "";
+//        try {
+//            PreparedStatement ps;
+//            String query = "SELECT * FROM customer_tbl";
+//            ps = login_db.getConnection().prepareStatement(query);
+//            ResultSet rs;
+//            rs = ps.executeQuery();
+//            while (rs.next()) {
+//
+//                name = rs.getString("c_name");
+//
+//            }
+//            jComboBox1.addItem(name);
+//        } catch (SQLException ex) {
+//        }
+        try {
+            String name = " ";
+            dbconnector dbc = new dbconnector();
+            ResultSet rs = dbc.getData("SELECT * FROM customer_tbl");
+
+            while (rs.next()) {
+                name = rs.getString("c_id");
+                jComboBox1.addItem(name);
+            }
+            
+            jComboBox1.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    String selectedId = (String) jComboBox1.getSelectedItem();
+                  String customerName = lookupCustomerName(selectedId);
+                    
+                    customerNameTextField.setText(customerName);
+                    //To change body of generated methods, choose Tools | Templates.
+                }
+
+                private String lookupCustomerName(String selectedId) {
+                    return null;
+                    //To change body of generated methods, choose Tools | Templates.
+                }
+                
+            });
+
+        } catch (SQLException ex) {
+            System.out.println("Error Message: " + ex);
+
+        }
+    }
+    
+    private String lookupCustomer(String customerId){
+        return " ";
+    }
+
+    //print
+    
+
+    public ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
+        ImageIcon MyImage = null;
+        if (ImagePath != null) {
             MyImage = new ImageIcon(ImagePath);
-        }else{
+        } else {
             MyImage = new ImageIcon(pic);
         }
-        
-    int newHeight = getHeightFromWidth(ImagePath, label.getWidth());
 
-    Image img = MyImage.getImage();
-    Image newImg = img.getScaledInstance(label.getWidth(), newHeight, Image.SCALE_SMOOTH);
-    ImageIcon image = new ImageIcon(newImg);
-    return image;
-}
-    
-    
-    public void table(){
-    int row = p_tbl.getSelectedRow();
-     int cc = p_tbl.getSelectedColumn();
-    ImageIcon format;
-     String tc = p_tbl.getModel().getValueAt(row, 0).toString();
-             try{
-            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery", "root", "");
-             String sql = "SELECT * from product_tbl where p_id="+tc+"";
-             PreparedStatement ps = con.prepareStatement(sql);
+        int newHeight = getHeightFromWidth(ImagePath, label.getWidth());
+
+        Image img = MyImage.getImage();
+        Image newImg = img.getScaledInstance(label.getWidth(), newHeight, Image.SCALE_SMOOTH);
+        ImageIcon image = new ImageIcon(newImg);
+        return image;
+    }
+
+    public void table() {
+        int row = p_tbl.getSelectedRow();
+        int cc = p_tbl.getSelectedColumn();
+        ImageIcon format;
+        String tc = p_tbl.getModel().getValueAt(row, 0).toString();
+        try {
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery", "root", "");
+            String sql = "SELECT * from product_tbl where p_id=" + tc + "";
+            PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-            int id=rs.getInt("p_id");
-            String name=rs.getString("p_name");
-            String pprice=rs.getString("p_price");
-            
-            image.setIcon(ResizeImage(rs.getString("img_pc"), null,image));
+            if (rs.next()) {
+                int id = rs.getInt("p_id");
+                String name = rs.getString("p_name");
+                String pprice = rs.getString("p_price");
+
+                image.setIcon(ResizeImage(rs.getString("img_pc"), null, image));
                 oldpath = rs.getString("img_pc");
-                pid.setText(""+id);             
+                pid.setText("" + id);
                 cprice.setText(pprice);
-                
-                
-         
+
             }
-             ps.close();
-             rs.close();
-         } catch (Exception e) {
-         JOptionPane.showMessageDialog(null, e);
-         }
+            ps.close();
+            rs.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
-    public void displayData(){
-       
-        try{
-       
+    }
+
+    public void displayData() {
+
+        try {
+
             dbconnector dbc = new dbconnector();
             ResultSet rs = dbc.getData("SELECT p_id as 'ID', p_name as 'Product', p_price as 'Price' FROM product_tbl");
             p_tbl.setModel(DbUtils.resultSetToTableModel(rs));
-       
-           
-        }catch(SQLException ex){
-            System.out.println("Error Message: "+ex);
-       
+
+        } catch (SQLException ex) {
+            System.out.println("Error Message: " + ex);
+
         }
     }
-    
-    public void reset(){
-        
-       
-        cid.setText("");   
-        pid.setText("");     
-        cprice.setText("");        
-        ctp.setText("");
-            
-        
-        
-    }
-    
-    
-    
-     Color navcolor= new Color(217,222,135);
-    Color headcolor= new Color(222,140,135);
-    Color bodycolor = new Color(222,184,135);
-    
 
-  
+    public void reset() {
+
+        pid.setText("");
+        cprice.setText("");
+        ctp.setText("");
+
+    }
+
+    Color navcolor = new Color(217, 222, 135);
+    Color headcolor = new Color(222, 140, 135);
+    Color bodycolor = new Color(222, 184, 135);
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -157,7 +233,6 @@ private Connection con;
         jScrollPane1 = new javax.swing.JScrollPane();
         p_tbl = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
-        cid = new javax.swing.JTextField();
         clear = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         refresh = new javax.swing.JPanel();
@@ -176,6 +251,11 @@ private Connection con;
         searchbar = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         image = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        rec = new javax.swing.JTextArea();
+        print = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        customerNameTextField = new javax.swing.JTextField();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
 
@@ -206,7 +286,7 @@ private Connection con;
         jLabel5.setText("SEARCH");
         search.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(search, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 40, 80, 30));
+        jPanel1.add(search, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 30, 80, 30));
 
         p_tbl.setBackground(new java.awt.Color(255, 230, 204));
         p_tbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -217,16 +297,11 @@ private Connection con;
         });
         jScrollPane1.setViewportView(p_tbl);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 430, 150));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 350, 150));
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel6.setText("Product ID:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, 80, 20));
-
-        cid.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        cid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        cid.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(cid, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 220, 20));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 80, 20));
 
         clear.setBackground(new java.awt.Color(222, 140, 135));
         clear.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -248,7 +323,7 @@ private Connection con;
         jLabel10.setText("CLEAR");
         clear.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 190, 80, 30));
+        jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 360, 80, 30));
 
         refresh.setBackground(new java.awt.Color(222, 140, 135));
         refresh.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -270,34 +345,34 @@ private Connection con;
         REFRESH.setText("REFRESH");
         refresh.add(REFRESH, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 150, 80, 30));
+        jPanel1.add(refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 360, 80, 30));
 
         jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel13.setText("Customer ID: ");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 90, 20));
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 90, 20));
 
         pid.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pid.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(pid, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 260, 220, 20));
+        jPanel1.add(pid, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 230, 220, 20));
 
         ctp.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         ctp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         ctp.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(ctp, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 330, 220, 20));
+        jPanel1.add(ctp, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 360, 170, 20));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel9.setText("Total Price:");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 330, 100, 20));
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 360, 100, 20));
 
         cprice.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cprice.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         cprice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(cprice, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 270, 220, 20));
+        jPanel1.add(cprice, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 300, 170, 20));
 
         jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel15.setText("Price:");
-        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 270, 60, 20));
+        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 300, 60, 20));
 
         jButton1.setBackground(new java.awt.Color(222, 140, 135));
         jButton1.setText("CALCULATE");
@@ -306,16 +381,16 @@ private Connection con;
                 jButton1MouseClicked(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 300, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 330, -1, -1));
 
         cquant.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cquant.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         cquant.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(cquant, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 340, 220, 20));
+        jPanel1.add(cquant, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 330, 220, 20));
 
         Quantity1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         Quantity1.setText("Quantity:");
-        jPanel1.add(Quantity1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 80, 20));
+        jPanel1.add(Quantity1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 80, 20));
 
         add.setBackground(new java.awt.Color(222, 140, 135));
         add.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -336,7 +411,7 @@ private Connection con;
         jLabel14.setText("ADD");
         add.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
-        jPanel1.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 110, 80, 30));
+        jPanel1.add(add, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 80, 30));
 
         searchbar.setBackground(new java.awt.Color(222, 184, 135));
         searchbar.setText("Enter Search Here...");
@@ -346,7 +421,7 @@ private Connection con;
                 searchbarMouseEntered(evt);
             }
         });
-        jPanel1.add(searchbar, new org.netbeans.lib.awtextra.AbsoluteConstraints(259, 40, 340, 30));
+        jPanel1.add(searchbar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 340, 30));
 
         image.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -354,9 +429,7 @@ private Connection con;
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(image, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -365,7 +438,24 @@ private Connection con;
                 .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 110, -1, -1));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 90, 110, -1));
+
+        rec.setColumns(20);
+        rec.setRows(5);
+        jScrollPane2.setViewportView(rec);
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 20, 210, 270));
+
+        print.setText("PRINT");
+        print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printActionPerformed(evt);
+            }
+        });
+        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 250, 80, -1));
+
+        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 270, 220, 20));
+        jPanel1.add(customerNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 220, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -382,11 +472,11 @@ private Connection con;
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchMouseClicked
-       DefaultTableModel model = (DefaultTableModel) p_tbl.getModel();
-       TableRowSorter<DefaultTableModel> obj = new TableRowSorter<>(model);
-       p_tbl.setRowSorter(obj);
-       obj.setRowFilter(RowFilter.regexFilter(searchbar.getText()));
-               
+        DefaultTableModel model = (DefaultTableModel) p_tbl.getModel();
+        TableRowSorter<DefaultTableModel> obj = new TableRowSorter<>(model);
+        p_tbl.setRowSorter(obj);
+        obj.setRowFilter(RowFilter.regexFilter(searchbar.getText()));
+
     }//GEN-LAST:event_searchMouseClicked
 
     private void searchMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchMouseEntered
@@ -398,121 +488,116 @@ private Connection con;
     }//GEN-LAST:event_searchMouseExited
 
     private void clearMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearMouseExited
-          clear.setBackground(headcolor);
+        clear.setBackground(headcolor);
     }//GEN-LAST:event_clearMouseExited
 
     private void clearMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearMouseEntered
-         clear.setBackground(navcolor);
+        clear.setBackground(navcolor);
     }//GEN-LAST:event_clearMouseEntered
 
     private void clearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearMouseClicked
-        
-         cid.setText(null);             
-         pid.setText(null);     
-         cquant.setText(null);       
-         cprice.setText(null);
-         ctp.setText(null);
-        
-            
+
+        pid.setText(null);
+        cquant.setText(null);
+        cprice.setText(null);
+        ctp.setText(null);
+
+
     }//GEN-LAST:event_clearMouseClicked
 
     private void p_tblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p_tblMouseClicked
-       table();
-       
+        table();
+
     }//GEN-LAST:event_p_tblMouseClicked
-       
+
     private void refreshMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_refreshMouseClicked
-        
-    
-    
+
+
     }//GEN-LAST:event_refreshMouseClicked
 
     private void refreshMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_refreshMouseEntered
-       refresh.setBackground(navcolor);
+        refresh.setBackground(navcolor);
     }//GEN-LAST:event_refreshMouseEntered
 
     private void refreshMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_refreshMouseExited
-       refresh.setBackground(headcolor);
+        refresh.setBackground(headcolor);
 
     }//GEN-LAST:event_refreshMouseExited
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        double a = Double.parseDouble(cquant.getText()); 
+        double a = Double.parseDouble(cquant.getText());
 
-       int b = Integer.parseInt(cprice.getText());
-       double totalp = a * b;
-       ctp.setText (""+totalp);
+        int b = Integer.parseInt(cprice.getText());
+        double totalp = a * b;
+        ctp.setText("" + totalp);
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void addMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseClicked
-          String name = cid.getText();   
-           String product = pid.getText();
-    String quantity = cquant.getText();   
-      String price = cprice.getText();
-      String tp =ctp.getText();
-       
-        
-       
-        if (name.equals("")||quantity.equals("")||price.equals("")||tp.equals(""))
-        {
-            JOptionPane.showMessageDialog(null, "All Fields Are Required!");
-        }
-        else{
-        PreparedStatement ps;
-ResultSet rs;
-String registerUserQuery = "INSERT INTO customer_order(c_id, p_id, cu_quant, cu_price, cu_tp, cu_status) VALUES (?,?,?,?,?,?)";
+        String product = pid.getText();
+        String quantity = cquant.getText();
+        String price = cprice.getText();
+        String tp = ctp.getText();
+        String name = jComboBox1.getSelectedItem().toString();
 
-try {
-    ps = login_db.getConnection().prepareStatement(registerUserQuery);
-    ps.setString(1, name); 
-     ps.setString(2, product); 
-    ps.setString(3, quantity);
-    ps.setString(4, price);
-    ps.setString(5,tp );
-    ps.setString(6,"PENDING" );
-    
-   
- 
-    if(ps.executeUpdate() > 0){
-        JOptionPane.showMessageDialog(null, "Add Successfully");
-        displayData();
-        reset();
-       
-       
-      
-    }else{
-        JOptionPane.showMessageDialog(null, "Error: Check Your Information");
-    }
-} catch (SQLException ex) {
-  JOptionPane.showMessageDialog(null, ex);
-}
+        if (name.equals("") || quantity.equals("") || price.equals("") || tp.equals("")) {
+            JOptionPane.showMessageDialog(null, "All Fields Are Required!");
+        } else {
+            PreparedStatement ps;
+            ResultSet rs;
+            String registerUserQuery = "INSERT INTO customer_order(c_id, p_id, cu_quant, cu_price, cu_tp, cu_status) VALUES (?,?,?,?,?,?)";
+
+            try {
+                ps = login_db.getConnection().prepareStatement(registerUserQuery);
+                ps.setString(1, name);
+                ps.setString(2, product);
+                ps.setString(3, quantity);
+                ps.setString(4, price);
+                ps.setString(5, tp);
+                ps.setString(6, "PENDING");
+
+                if (ps.executeUpdate() > 0) {
+                    JOptionPane.showMessageDialog(null, "Add Successfully");
+                        gslip();
+                    reset();
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error: Check Your Information");
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            }
         }
     }//GEN-LAST:event_addMouseClicked
 
     private void addMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseEntered
-         add.setBackground(navcolor);
+        add.setBackground(navcolor);
     }//GEN-LAST:event_addMouseEntered
 
     private void addMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMouseExited
-          add.setBackground(headcolor);
+        add.setBackground(headcolor);
     }//GEN-LAST:event_addMouseExited
 
     private void searchbarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchbarMouseEntered
-         searchbar.setText(null);
+        searchbar.setText(null);
     }//GEN-LAST:event_searchbarMouseEntered
+
+    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
+       print();
+    }//GEN-LAST:event_printActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Quantity1;
     private javax.swing.JLabel REFRESH;
     private javax.swing.JPanel add;
-    private javax.swing.JTextField cid;
     private javax.swing.JPanel clear;
     private javax.swing.JTextField cprice;
     private javax.swing.JTextField cquant;
     private javax.swing.JTextField ctp;
+    private javax.swing.JTextField customerNameTextField;
     private javax.swing.JLabel image;
     private javax.swing.JButton jButton1;
+    public static javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;
@@ -524,14 +609,16 @@ try {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable p_tbl;
     private javax.swing.JTextField pid;
+    private javax.swing.JButton print;
+    private javax.swing.JTextArea rec;
     private javax.swing.JPanel refresh;
     private javax.swing.JPanel search;
     private javax.swing.JTextField searchbar;
     // End of variables declaration//GEN-END:variables
-String filen= null;
-private ImageIcon format = null;
+String filen = null;
+    private ImageIcon format = null;
 
 }
-

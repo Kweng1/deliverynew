@@ -114,7 +114,12 @@ public class dashBoard extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-graph-report-48 (1).png"))); // NOI18N
         jLabel3.setText("CUSTOMER REPORT");
-        customer_report.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 40));
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
+        customer_report.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, -1));
 
         navbar.add(customer_report, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 180, 40));
 
@@ -335,7 +340,7 @@ public class dashBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_customer_reportMouseExited
 
     private void customer_reportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customer_reportMouseClicked
-      customerOrder up = new customerOrder();
+          customerOrder up = new customerOrder();
       maindesktop.add(up).setVisible(true);
     }//GEN-LAST:event_customer_reportMouseClicked
 
@@ -395,6 +400,10 @@ public class dashBoard extends javax.swing.JFrame {
     private void customerlistMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerlistMouseExited
          customerlist.setBackground(navcolor);
     }//GEN-LAST:event_customerlistMouseExited
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+       
+    }//GEN-LAST:event_jLabel3MouseClicked
 
     /**
      * @param args the command line arguments

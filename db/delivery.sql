@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 04, 2023 at 03:11 PM
+-- Generation Time: Jun 05, 2023 at 11:17 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -50,6 +50,22 @@ CREATE TABLE `customer_order` (
   `cu_status` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `customer_order`
+--
+
+INSERT INTO `customer_order` (`o_id`, `c_id`, `p_id`, `cu_quant`, `cu_price`, `cu_tp`, `cu_status`) VALUES
+(14, 11, 5, 3, 300, 900, 'PENDING'),
+(20, 15, 8, 5, 500, 2500, 'DELIVERED'),
+(21, 19, 8, 1, 500, 500, 'PENDING'),
+(22, 12, 8, 2, 500, 1000, 'PENDING'),
+(23, 16, 6, 2, 200, 400, 'PENDING'),
+(24, 13, 6, 1, 200, 200, 'PENDING'),
+(25, 13, 9, 2, 12, 24, 'PENDING'),
+(26, 23, 7, 2, 300, 600, 'PENDING'),
+(27, 23, 8, 1, 500, 500, 'PENDING'),
+(28, 24, 7, 1, 300, 300, 'PENDING');
+
 -- --------------------------------------------------------
 
 --
@@ -60,28 +76,27 @@ CREATE TABLE `customer_tbl` (
   `c_id` int(20) NOT NULL,
   `c_name` varchar(50) NOT NULL,
   `c_add` varchar(50) NOT NULL,
-  `c_con` varchar(50) NOT NULL,
-  `c_order` varchar(20) NOT NULL,
-  `c_quant` int(50) NOT NULL,
-  `c_price` int(50) NOT NULL,
-  `c_tp` int(50) NOT NULL,
-  `sta_tus` varchar(50) NOT NULL
+  `c_con` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customer_tbl`
 --
 
-INSERT INTO `customer_tbl` (`c_id`, `c_name`, `c_add`, `c_con`, `c_order`, `c_quant`, `c_price`, `c_tp`, `sta_tus`) VALUES
-(11, 'rin', 'talisay', '09297830328', 'hawaiian', 2, 100, 200, ''),
-(12, 'ran', 'tanke', '09064633163', 'pepperoni', 4, 150, 600, ''),
-(13, 'ren', 'mingla', '09325953301', 'cheesy', 5, 130, 650, ''),
-(15, 'ren', 'tanke', '09064633163', 'pepperoni', 2, 100, 200, 'DELIVERED'),
-(16, 'kyle', 'minglanilla', '09297830328', 'buffalo', 2, 150, 300, 'DELIVERED'),
-(17, 'kenneth', 'tanke', '09064633163', 'cheese', 2, 150, 300, 'PENDING'),
-(18, 'mike', 'poblacion', '09325953301', 'supreme', 4, 250, 1000, 'PENDING'),
-(19, 'ernest', 'cansojong', '09064633163', 'neopolitan', 3, 200, 600, 'PENDING'),
-(20, 'tan', 'Talisay', '09064633163', 'supreme', 2, 130, 260, 'PENDING');
+INSERT INTO `customer_tbl` (`c_id`, `c_name`, `c_add`, `c_con`) VALUES
+(11, 'rin', 'talisay', '09297830328'),
+(12, 'ran', 'tanke', '09064633163'),
+(13, 'ren', 'mingla', '09325953301'),
+(15, 'ren', 'tanke', '09064633163'),
+(16, 'kyle', 'minglanilla', '09297830328'),
+(17, 'kenneth', 'tanke', '09064633163'),
+(18, 'mike', 'poblacion', '09325953301'),
+(19, 'ernest', 'cansojong', '09064633163'),
+(20, 'tan', 'Talisay', '09064633163'),
+(21, 'TEST', 'TEST', '123546'),
+(22, 'har', 'ila', '098653'),
+(23, 'indang', 'argao', '0987653'),
+(24, 'aicee', 'argao', '09876543');
 
 -- --------------------------------------------------------
 
@@ -104,7 +119,8 @@ INSERT INTO `product_tbl` (`p_id`, `p_name`, `p_price`, `img_pc`) VALUES
 (5, 'hawaiian', 300, 'src/image/des.jpg'),
 (6, 'cheese', 200, 'src/image/cheese.jpg'),
 (7, 'burnt', 300, 'src/image/burnt.jpg'),
-(8, 'newyork', 500, 'src/image/nypizza.jpg');
+(8, 'newyork', 500, 'src/image/nypizza.jpg'),
+(9, 'TEST', 12, 'src/image/abin.png');
 
 -- --------------------------------------------------------
 
@@ -154,7 +170,8 @@ INSERT INTO `user_db` (`f_name`, `l_name`, `email`, `user_name`, `pass_word`) VA
 ('ern', 'ern', 'ern', 'ern', '981bf06968595931d093e5c34a521c907c17cc192880d3451eb21e4cae406003'),
 ('rin', 'rin', 'rin', 'rin', 'df0142fe6afa9f3055afbfde89eb899f1bdcfadad4911c93efeb1a1f568d9858'),
 ('nin', 'nin', 'nin', 'nin', '915a7d6479eff6a63bab5ce232d32d5710e7890e6b312a8612753bded7ebbdf0'),
-('ran', 'ran', 'ran', 'ran', '591ca0fb7d8f8847e6d5e7fa2c35d654be2babde6665f4cdb672c88529de51c6');
+('ran', 'ran', 'ran', 'ran', '591ca0fb7d8f8847e6d5e7fa2c35d654be2babde6665f4cdb672c88529de51c6'),
+('TEST', 'TEST', 'TEST', 'TEST', '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2');
 
 --
 -- Indexes for dumped tables
@@ -188,19 +205,19 @@ ALTER TABLE `product_tbl`
 -- AUTO_INCREMENT for table `customer_order`
 --
 ALTER TABLE `customer_order`
-  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `customer_tbl`
 --
 ALTER TABLE `customer_tbl`
-  MODIFY `c_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `c_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `product_tbl`
 --
 ALTER TABLE `product_tbl`
-  MODIFY `p_id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `p_id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables

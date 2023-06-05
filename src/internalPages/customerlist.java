@@ -117,7 +117,7 @@ String contact= ccon.getText();
      
          try{
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery", "root", "");
-            String sql = "INSERT INTO product_tbl ( c_name, c_add, c_con)values (?,?,?)"; 
+            String sql = "INSERT INTO customer_tbl ( c_name, c_add, c_con)values (?,?,?)"; 
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, cname.getText());
             ps.setString(2, cadd.getText());         
@@ -128,7 +128,7 @@ String contact= ccon.getText();
         JOptionPane.showMessageDialog(this, "ADDED SUCCESSFULLY");
         reset();
             }catch(Exception e){
-                System.err.println("Cannot connect to database: " + e.getMessage());
+                JOptionPane.showMessageDialog(null,""+e);
      
      
      }
@@ -507,13 +507,7 @@ String contact= ccon.getText();
     }//GEN-LAST:event_caddActionPerformed
 
     private void caddKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_caddKeyPressed
-         char c = evt.getKeyChar();
-        if(Character.isLetter(c)){
-        cadd.setEditable(false);
-        JOptionPane.showMessageDialog(this, "Please enter number only");
-        }else{
-        cadd.setEditable(true);
-        }
+        
     }//GEN-LAST:event_caddKeyPressed
 
     private void cconActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cconActionPerformed

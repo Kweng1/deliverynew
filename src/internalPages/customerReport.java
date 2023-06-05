@@ -47,7 +47,10 @@ DefaultTableModel model;
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT o_id as 'Order ID', c_id as 'Customer ID',p_id as 'Product ID',cu_quant as 'Quantity',cu_price as 'Price',cu_tp as 'Total Price',cu_status as 'Status' FROM customer_order");
+            ResultSet rs = dbc.getData("SELECT customer_order.o_id, customer_tbl.c_id,customer_tbl.c_name,customer_tbl.c_add, customer_tbl.c_con, product_tbl.p_id, product_tbl.p_name,customer_order.cu_quant,customer_order.cu_price,customer_order.cu_tp,customer_order.cu_status\n" +
+"FROM ((customer_order\n" +
+"INNER JOIN customer_tbl ON customer_order.c_id = customer_tbl.c_id)\n" +
+"INNER JOIN product_tbl ON customer_order.p_id = product_tbl.p_id);");
            
             o_table.setModel(DbUtils.resultSetToTableModel(rs));
        
@@ -347,7 +350,14 @@ if (row >= 0) {
     }//GEN-LAST:event_printMouseExited
 
     private void o_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_o_tableMouseClicked
-        displayData();
+           int rowIndex = o_table.getSelectedRow();
+        if(rowIndex <0){
+        
+        }else{
+        TableModel model = o_table.getModel();
+
+       
+        }
     }//GEN-LAST:event_o_tableMouseClicked
 
     private void logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseClicked
