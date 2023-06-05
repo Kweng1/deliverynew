@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.MessageFormat;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -31,6 +32,7 @@ import net.proteanit.sql.DbUtils;
  */
 public class customerReport extends javax.swing.JInternalFrame {
 private Connection con;
+DefaultTableModel model;
     public customerReport() {
         initComponents();
         displayData();
@@ -40,22 +42,13 @@ private Connection con;
         bi.setNorthPane(null);
     }
     
-     public void displayData(){
+    public void displayData(){
        
         try{
        
             dbconnector dbc = new dbconnector();
-            ResultSet rs = dbc.getData("SELECT customer_tbl.c_id as 'ID',"
-                    +"customer_tbl.c_name as 'Name',"
-                    + "customer_tbl.c_con as 'Contact No.',"
-                    + "product_tbl.p_name as 'Order',"
-                    + "customer_tbl.c_size as 'Size',"
-                    + "customer_tbl.c_quant as 'Quantity',"
-                    + "customer_tbl.c_tp as 'Total Price',"
-                    + "customer_tbl.sta_tus as 'Status'\n" +
-                     "FROM customer_order "
-                    + "LEFT JOIN customer_tbl ON customer_order.c_id = customer_tbl.c_id"
-                    + " LEFT JOIN product_tbl ON customer_order.p_id = product_tbl.p_id");
+            ResultSet rs = dbc.getData("SELECT o_id as 'Order ID', c_id as 'Customer ID',p_id as 'Product ID',cu_quant as 'Quantity',cu_price as 'Price',cu_tp as 'Total Price',cu_status as 'Status' FROM customer_order");
+           
             o_table.setModel(DbUtils.resultSetToTableModel(rs));
        
         }catch(SQLException ex){
@@ -63,42 +56,14 @@ private Connection con;
        
         }
     }
-     public void table(){
-     int row = o_table.getSelectedRow();
-     int cc = o_table.getSelectedColumn();
-     String tc = o_table.getModel().getValueAt(row, 0).toString();
-             try{
-            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
-             String sql = "select * from customer_tbl where c_id="+tc+"";
-             PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
-            if(rs.next()){
-            
-            String stat=rs.getString("sta_tus");
-            
-            
-           
-            
-            
-               
-                status.getSelectedIndex();
-                     
-                
-         
-            }
-             pst.close();
-             rs.close();
-         } catch (Exception e) {
-         JOptionPane.showMessageDialog(null, e);
-         }
-        }
+     
      public void update(){
          try {
          con = DriverManager.getConnection("jdbc:mysql://localhost:3306/delivery","root","");
          int row = o_table.getSelectedRow();
 if (row >= 0) {
     String value = o_table.getModel().getValueAt(row, 0).toString();
-    String sql = "UPDATE customer_tbl SET sta_tus=? WHERE c_id=?";
+    String sql = "UPDATE customer_order SET cu_status=? WHERE o_id=?";
     PreparedStatement pst = con.prepareStatement(sql);
     pst.setString(1, status.getSelectedItem().toString());
     pst.setString(2, value);
@@ -382,7 +347,7 @@ if (row >= 0) {
     }//GEN-LAST:event_printMouseExited
 
     private void o_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_o_tableMouseClicked
-        table();
+        displayData();
     }//GEN-LAST:event_o_tableMouseClicked
 
     private void logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseClicked
