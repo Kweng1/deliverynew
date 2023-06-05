@@ -109,7 +109,7 @@ public class dashBoard extends javax.swing.JFrame {
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8-report-48 (1).png"))); // NOI18N
-        jLabel9.setText("CUSTOMER REPORT");
+        jLabel9.setText("CUSTOMER ORDER");
         customer_report.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 40));
 
         navbar.add(customer_report, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 180, 40));

@@ -243,7 +243,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
         p_tbl = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         clear = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
         refresh = new javax.swing.JPanel();
         REFRESH = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -262,10 +262,11 @@ public class customerOrder extends javax.swing.JInternalFrame {
         image = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         rec = new javax.swing.JTextArea();
-        print = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         customerNameTextField = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
+        print = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
 
@@ -327,11 +328,11 @@ public class customerOrder extends javax.swing.JInternalFrame {
         });
         clear.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel10.setBackground(new java.awt.Color(153, 153, 153));
-        jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("CLEAR");
-        clear.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
+        jLabel11.setBackground(new java.awt.Color(153, 153, 153));
+        jLabel11.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("CLEAR");
+        clear.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
         jPanel1.add(clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 360, 80, 30));
 
@@ -456,17 +457,9 @@ public class customerOrder extends javax.swing.JInternalFrame {
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 20, 230, 270));
 
-        print.setBackground(new java.awt.Color(222, 140, 135));
-        print.setText("PRINT");
-        print.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printActionPerformed(evt);
-            }
-        });
-        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 360, 90, 30));
-
         jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 260, 220, 20));
 
+        customerNameTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         customerNameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 customerNameTextFieldActionPerformed(evt);
@@ -478,11 +471,33 @@ public class customerOrder extends javax.swing.JInternalFrame {
         jLabel17.setText("Customer ID: ");
         jPanel1.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, 90, 20));
 
+        print.setBackground(new java.awt.Color(222, 140, 135));
+        print.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                printMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                printMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                printMouseExited(evt);
+            }
+        });
+        print.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel10.setBackground(new java.awt.Color(153, 153, 153));
+        jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel10.setText("PRINT");
+        print.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
+
+        jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 360, 80, 30));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -603,13 +618,21 @@ public class customerOrder extends javax.swing.JInternalFrame {
         searchbar.setText(null);
     }//GEN-LAST:event_searchbarMouseEntered
 
-    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
-       print();
-    }//GEN-LAST:event_printActionPerformed
-
     private void customerNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerNameTextFieldActionPerformed
-        // TODO add your handling code here:
+        print();
     }//GEN-LAST:event_customerNameTextFieldActionPerformed
+
+    private void printMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseEntered
+        print.setBackground(navcolor);
+    }//GEN-LAST:event_printMouseEntered
+
+    private void printMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseExited
+      print.setBackground(headcolor);
+    }//GEN-LAST:event_printMouseExited
+
+    private void printMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseClicked
+          print();
+    }//GEN-LAST:event_printMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -626,6 +649,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
     public static javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -639,7 +663,7 @@ public class customerOrder extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable p_tbl;
     private javax.swing.JTextField pid;
-    private javax.swing.JButton print;
+    private javax.swing.JPanel print;
     private javax.swing.JTextArea rec;
     private javax.swing.JPanel refresh;
     private javax.swing.JPanel search;

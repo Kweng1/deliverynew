@@ -7,6 +7,9 @@ package internalPages;
 
 import config.dbconnector;
 import java.awt.Color;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -48,7 +51,7 @@ DefaultTableModel model;
 public void displayData() {
     try {
         dbconnector dbc = new dbconnector();
-        ResultSet rs = dbc.getData("SELECT customer_order.o_id as 'Order ID', customer_tbl.c_id as 'Customer Id', customer_tbl.c_name as 'Customer Name', customer_tbl.c_add as 'Customer Address', customer_tbl.c_con as 'Customer Contact', product_tbl.p_id as 'Product ID', product_tbl.p_name as 'Product Name', customer_order.cu_quant as 'Quantity', customer_order.cu_price as 'Price', customer_order.cu_tp as 'Total Price', customer_order.cu_status as 'Status' FROM ((customer_order INNER JOIN customer_tbl ON customer_order.c_id = customer_tbl.c_id) INNER JOIN product_tbl ON customer_order.p_id = product_tbl.p_id) ORDER BY customer_order.o_id ASC");
+        ResultSet rs = dbc.getData("SELECT customer_order.o_id as 'Order ID', customer_tbl.c_name as 'Name', customer_tbl.c_add as 'Address', customer_tbl.c_con as 'Contact', product_tbl.p_name as 'Product ', customer_order.cu_quant as 'Quantity', customer_order.cu_price as 'Price', customer_order.cu_tp as 'Total', customer_order.cu_status as 'Status' FROM ((customer_order INNER JOIN customer_tbl ON customer_order.c_id = customer_tbl.c_id) INNER JOIN product_tbl ON customer_order.p_id = product_tbl.p_id) ORDER BY customer_order.o_id ASC");
 
         o_table.setModel(DbUtils.resultSetToTableModel(rs));
 
@@ -98,7 +101,19 @@ if (row >= 0) {
      Color navcolor= new Color(217,222,135);
     Color headcolor= new Color(222,140,135);
     Color bodycolor = new Color(222,184,135);
-
+     
+     public void filter(String qry ){
+             model = (DefaultTableModel) o_table.getModel();
+         TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(model);
+         o_table.setRowSorter(trs);
+       
+         if(qry =="ALL"){
+        o_table.setRowSorter(trs);
+         }else{
+         trs.setRowFilter(RowFilter.regexFilter(qry));
+         }
+       
+       }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -115,16 +130,20 @@ if (row >= 0) {
         refresh = new javax.swing.JPanel();
         REFRESH = new javax.swing.JLabel();
         print = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         o_table = new javax.swing.JTable();
         logout = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         searchbar = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         status = new javax.swing.JComboBox<>();
+        filter = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
+        update = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        delete = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(736, 436));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -206,9 +225,9 @@ if (row >= 0) {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("PRINT");
+        jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("PRINT");
 
         javax.swing.GroupLayout printLayout = new javax.swing.GroupLayout(print);
         print.setLayout(printLayout);
@@ -216,13 +235,13 @@ if (row >= 0) {
             printLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, printLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         printLayout.setVerticalGroup(
             printLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, printLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel1.add(print, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 380, -1, -1));
@@ -235,7 +254,7 @@ if (row >= 0) {
         });
         jScrollPane1.setViewportView(o_table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 700, 210));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 710, 210));
 
         logout.setBackground(new java.awt.Color(222, 140, 135));
         logout.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -269,29 +288,66 @@ if (row >= 0) {
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel2.setText("STATUS:");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 80, 30));
-
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jButton1.setText("UPDATE");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 100, -1, 30));
-
-        jButton2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jButton2.setText("DELETE");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 100, 90, 30));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 100, 60, 30));
 
         status.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DELIVERED", "PENDING" }));
         jPanel1.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 170, 30));
+
+        filter.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        filter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "DELIVERED", "PENDING" }));
+        filter.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                filterItemStateChanged(evt);
+            }
+        });
+        jPanel1.add(filter, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 100, -1, 30));
+
+        jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel4.setText("STATUS:");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 80, 30));
+
+        update.setBackground(new java.awt.Color(222, 140, 135));
+        update.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                updateMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                updateMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                updateMouseExited(evt);
+            }
+        });
+        update.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("UPDATE");
+        update.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
+
+        jPanel1.add(update, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 100, 80, 30));
+
+        delete.setBackground(new java.awt.Color(222, 140, 135));
+        delete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deleteMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                deleteMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                deleteMouseExited(evt);
+            }
+        });
+        delete.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("DELETE");
+        delete.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
+
+        jPanel1.add(delete, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 100, 80, 30));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 740, 430));
 
@@ -328,18 +384,28 @@ if (row >= 0) {
     }//GEN-LAST:event_refreshMouseExited
 
     private void printMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseClicked
-     MessageFormat header = new MessageFormat("Customer Order");
-       MessageFormat footer = new MessageFormat("Page {0, number,integer}");
-       
-       try
-       {
-           o_table.print(JTable.PrintMode.NORMAL,header,footer);
-       }
-       
-       catch(java.awt.print.PrinterException e)
-       {
-           System.err.format("No Printer found", e.getMessage());
-       }
+    MessageFormat header = new MessageFormat("CUSTOMER REPORT");
+    MessageFormat footer = new MessageFormat("Page {0, number, integer}");
+
+    PrinterJob printerJob = PrinterJob.getPrinterJob();
+
+    if (printerJob.printDialog()) {
+        PageFormat pageFormat = printerJob.defaultPage();
+        pageFormat.setOrientation(PageFormat.LANDSCAPE);
+
+        // Set the page margins to fit the entire table on one page
+        double margin = 36; // 1 inch margin
+        double width = pageFormat.getImageableWidth() - 2 * margin;
+        double height = pageFormat.getImageableHeight() - 2 * margin;
+
+        o_table.setSize((int) width, (int) height);
+
+        try {
+            o_table.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+        } catch (PrinterException e) {
+            System.err.format("Printer error: %s%n", e.getMessage());
+        }
+    }
     }//GEN-LAST:event_printMouseClicked
 
     private void printMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printMouseEntered
@@ -382,12 +448,18 @@ if (row >= 0) {
        searchbar.setText(null);
     }//GEN-LAST:event_searchbarMouseEntered
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       update();
-       reset();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void filterItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filterItemStateChanged
+           String qry = filter.getSelectedItem().toString();
+     
+        filter(qry);
+    }//GEN-LAST:event_filterItemStateChanged
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateMouseClicked
+         update();
+       reset();
+    }//GEN-LAST:event_updateMouseClicked
+
+    private void deleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteMouseClicked
         int rowIndex = o_table.getSelectedRow();
        if(rowIndex < 0){
            JOptionPane.showMessageDialog(null, "Please select a data first");
@@ -404,17 +476,36 @@ if (row >= 0) {
                             reset();
                     }    
        }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_deleteMouseClicked
+
+    private void updateMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateMouseEntered
+        update.setBackground(navcolor);
+    }//GEN-LAST:event_updateMouseEntered
+
+    private void updateMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateMouseExited
+        update.setBackground(headcolor);
+    }//GEN-LAST:event_updateMouseExited
+
+    private void deleteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteMouseEntered
+        delete.setBackground(navcolor);
+    }//GEN-LAST:event_deleteMouseEntered
+
+    private void deleteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteMouseExited
+         delete.setBackground(headcolor);
+    }//GEN-LAST:event_deleteMouseExited
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel REFRESH;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JPanel delete;
+    private javax.swing.JComboBox<String> filter;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -425,5 +516,6 @@ if (row >= 0) {
     private javax.swing.JPanel search;
     private javax.swing.JTextField searchbar;
     private javax.swing.JComboBox<String> status;
+    private javax.swing.JPanel update;
     // End of variables declaration//GEN-END:variables
 }

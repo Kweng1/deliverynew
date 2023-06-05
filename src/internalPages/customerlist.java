@@ -474,7 +474,7 @@ String contact= ccon.getText();
     }//GEN-LAST:event_printMouseExited
 
     private void refreshMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_refreshMouseClicked
-         table();
+         displayData();
     
     
     }//GEN-LAST:event_refreshMouseClicked
