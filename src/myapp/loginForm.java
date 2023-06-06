@@ -222,6 +222,11 @@ public class loginForm extends javax.swing.JFrame {
         password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         password.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         password.setOpaque(false);
+        password.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                passwordMouseClicked(evt);
+            }
+        });
         jPanel4.add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 190, 320, 40));
 
         username.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -412,6 +417,10 @@ try {
     private void forgotpassMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgotpassMouseExited
         // TODO add your handling code here:
     }//GEN-LAST:event_forgotpassMouseExited
+
+    private void passwordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_passwordMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwordMouseClicked
 
     
   

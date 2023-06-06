@@ -91,7 +91,7 @@ public class dashBoard extends javax.swing.JFrame {
         dashboard.setText("  PRODUCT LIST");
         dashpane1.add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 160, 40));
 
-        navbar.add(dashpane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 180, 40));
+        navbar.add(dashpane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 180, 40));
 
         customer_report.setBackground(new java.awt.Color(217, 222, 135));
         customer_report.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -205,7 +205,9 @@ public class dashBoard extends javax.swing.JFrame {
         customerlist.setLayout(customerlistLayout);
         customerlistLayout.setHorizontalGroup(
             customerlistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, customerlistLayout.createSequentialGroup()
+                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addContainerGap())
         );
         customerlistLayout.setVerticalGroup(
             customerlistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,7 +216,7 @@ public class dashBoard extends javax.swing.JFrame {
                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        navbar.add(customerlist, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, -1, -1));
+        navbar.add(customerlist, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, -1, -1));
 
         jPanel1.add(navbar);
         navbar.setBounds(0, 0, 180, 470);
